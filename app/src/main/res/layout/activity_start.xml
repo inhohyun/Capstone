@@ -7,25 +7,47 @@
     tools:context=".OTP.StartActivity"
     android:background="@color/backgrountColor">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:src="@drawable/img_login"
-        app:layout_constraintEnd_toEndOf="@id/Guild4"
+    <TextView
+        android:id="@+id/tv_start_main1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="영수증 처리"
+        app:layout_constraintTop_toTopOf="@id/Guild1"
         app:layout_constraintStart_toStartOf="@id/Guild3"
-        app:layout_constraintTop_toTopOf="@id/Guild1" />
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/tv_start_main2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="보조 프로그램"
+        app:layout_constraintTop_toBottomOf="@id/tv_start_main1"
+        app:layout_constraintStart_toStartOf="@+id/Guild3"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="30sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="복잡한 영수증 처리 편하게 해보세요."
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="@id/Guild3"
+        app:layout_constraintTop_toBottomOf="@id/tv_start_main2" />
 
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_goLoginPage"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         app:layout_constraintStart_toStartOf="@id/Guild3"
         app:layout_constraintEnd_toEndOf="@id/Guild4"
         app:layout_constraintTop_toTopOf="@id/Guild_img"
-        android:layout_marginTop="200dp"
-
+        android:layout_marginTop="150dp"
         android:text="@string/otpLogin"
         android:backgroundTint="@color/localColor"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/Guild1"
         android:layout_width="wrap_content"
