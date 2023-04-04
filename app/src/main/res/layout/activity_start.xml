@@ -46,7 +46,8 @@
         app:layout_constraintTop_toTopOf="@id/Guild_img"
         android:layout_marginTop="150dp"
         android:text="@string/otpLogin"
-        android:backgroundTint="@color/localColor"/>
+        android:background="@drawable/btn_go_loginpage"
+        android:textColor="@color/white"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/Guild1"
