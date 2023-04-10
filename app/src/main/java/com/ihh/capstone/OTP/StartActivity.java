@@ -16,16 +16,17 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        btn_goLoginPage = findViewById(R.id.btn_goLoginPage);
+        btn_goLoginPage = findViewById(R.id.btn_PC_OTP);
 
-        goLoginPage();
+        CheckOTP();
 
     }
-    private void goLoginPage() {
+    private void CheckOTP() {
+
         btn_goLoginPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, LoginActivity.class);
+                Intent intent = new Intent(context, CheckOTPActivity.class);
                 startActivity(intent);
             }
         }
