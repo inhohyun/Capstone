@@ -6,7 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".OTP.CheckOTPActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
+
+    <ImageView
+        android:id="@+id/writeBtn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/plus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="40dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

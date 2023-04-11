@@ -11,7 +11,7 @@
         android:id="@+id/tv_start_main1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="영수증 처리"
+        android:text="업무 처리"
         app:layout_constraintTop_toTopOf="@id/Guild1"
         app:layout_constraintStart_toStartOf="@id/Guild3"
         android:textSize="30sp"
@@ -32,7 +32,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="복잡한 영수증 처리 편하게 해보세요."
+        android:text="복잡한 업무 처리 편하게 해보세요."
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="@id/Guild3"
         app:layout_constraintTop_toBottomOf="@id/tv_start_main2" />
