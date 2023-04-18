@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OTP.CreateOTPActivity"
+    tools:context=".login.LoginActivity"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:background="@color/localColor">
 
         <TextView
-            android:text="OTP 생성하기"
+            android:text="1차 로그인"
             android:gravity="center"
             android:textColor="#000000"
             android:textStyle="bold"
@@ -25,13 +25,23 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:orientation="vertical">
-
         <EditText
-            android:hint="OTP KEY"
-
+            android:id="@+id/emailArea"
+            android:hint="id"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-
+            android:layout_height="50dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="#999999"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+        <EditText
+            android:id="@+id/passwordArea"
+            android:hint="password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:inputType="textPassword"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,7 +53,7 @@
             android:id="@+id/loginBtn"
             android:background="@drawable/btn_go_loginpage"
             android:layout_margin="20dp"
-            android:text="OTP CODE 생성하기"
+            android:text="1차 로그인하기"
             android:textColor="@color/white"
             android:textStyle="bold
 "

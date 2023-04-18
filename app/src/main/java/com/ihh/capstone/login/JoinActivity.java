@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.ihh.capstone.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class JoinActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_first_login);
+        setContentView(R.layout.activity_join);
     }
 }
