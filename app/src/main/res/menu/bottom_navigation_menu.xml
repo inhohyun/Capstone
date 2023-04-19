@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_OTP"
+        android:icon="@drawable/otp_icon"
+        android:title="OTP"/>
+
+    <item
+        android:id="@+id/navigation_OCR"
+        android:icon="@drawable/ocr"
+        android:title="OCR"/>
+
+    <item
+        android:id="@+id/navigation_MultiData"
+        android:icon="@drawable/multi_data"
+        android:title="멀티 데이터" />
+
+</menu>
