@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_marginTop="100dp"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="300dp"
         android:layout_marginHorizontal="20dp"
         android:background="@color/grey"
         android:gravity="center">
@@ -23,15 +23,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="300dp"
-        android:layout_height="400dp">
+        android:layout_marginTop="415dp"
+        android:layout_height="315dp"
+        android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="이미지의 text가 들어갈 공간"
-            android:textSize="30sp"
-            android:layout_marginTop="30dp"
-            android:layout_marginHorizontal="20dp"/>
+            android:textSize="28sp"/>
 
 
     </LinearLayout>
