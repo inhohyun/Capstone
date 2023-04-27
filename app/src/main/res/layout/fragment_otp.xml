@@ -87,7 +87,7 @@
             android:id="@+id/btn_goToJoin"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="20dp"
             android:text="로그아웃"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center"

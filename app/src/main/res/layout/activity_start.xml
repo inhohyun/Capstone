@@ -41,13 +41,14 @@
         android:id="@+id/btn_goToJoin"
         android:layout_width="300dp"
         android:layout_height="50dp"
-        app:layout_constraintStart_toStartOf="@id/Guild3"
-        app:layout_constraintEnd_toEndOf="@id/Guild4"
-        app:layout_constraintTop_toTopOf="@id/Guild_img"
         android:layout_marginTop="100dp"
-        android:text="회원 가입하기"
         android:background="@drawable/btn_go_loginpage"
-        android:textColor="@color/white"/>
+        android:text="회원 가입하기"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/Guild4"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="@id/Guild3"
+        app:layout_constraintTop_toTopOf="@id/Guild_img" />
 
     <Button
         android:id="@+id/btn_goToLogin"
