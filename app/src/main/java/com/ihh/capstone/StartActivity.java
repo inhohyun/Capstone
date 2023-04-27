@@ -17,7 +17,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        btn_goLoginPage = findViewById(R.id.btn_goToJoin);
+        btn_goLoginPage = findViewById(R.id.btn_goToLogin);
         btn_goToJoin = findViewById(R.id.btn_goToJoin);
         goToLogin();
         goToJoin();
