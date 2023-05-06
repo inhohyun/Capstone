@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         setLoginBtn();
     }
 
+    //로그인 버튼 클릭시 서버에 아이디 비번 전달
     private void setLoginBtn() {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 LoginService loginService = retrofit.create(LoginService.class);
 
-// Interface를 활용해 웹 통신하기
+                // Interface를 활용해 웹 통신하기
                 loginService.requestLogin(textId, textPw).enqueue(new Callback<Login>() {
                     // 웹통신 성공
                     @Override
