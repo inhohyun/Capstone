@@ -76,16 +76,17 @@
             android:layout_height="0.5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
+
         <Button
-            android:id="@+id/loginBtn"
-            android:background="@drawable/btn_go_loginpage"
+            android:id="@+id/joinBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:layout_margin="20dp"
+            android:background="@drawable/btn_go_loginpage"
             android:text="회원가입"
             android:textColor="@color/white"
             android:textStyle="bold
-"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"/>
+" />
 
     </LinearLayout>
 
