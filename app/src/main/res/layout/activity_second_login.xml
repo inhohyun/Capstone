@@ -68,8 +68,7 @@
             android:layout_margin="20dp"
             android:text="2차 로그인하기"
             android:textColor="@color/white"
-            android:textStyle="bold
-"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="50dp"/>
 

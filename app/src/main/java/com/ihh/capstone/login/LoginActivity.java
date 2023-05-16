@@ -3,6 +3,7 @@ package com.ihh.capstone.login;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -65,6 +66,11 @@ public class LoginActivity extends AppCompatActivity {
                         if (login != null && login.getIsSuccess().equals("success")) {
 
                             Log.d("login","success");
+
+                            Toast.makeText(LoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(LoginActivity.this, SecondLoginActivity.class);
+                            startActivity(intent);
 
                         }
                         //로그인 실패
