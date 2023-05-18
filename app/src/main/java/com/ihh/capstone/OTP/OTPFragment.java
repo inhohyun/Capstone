@@ -20,10 +20,10 @@ public class OTPFragment extends Fragment {
     private TextView userName;
     private TextView userRank;
     private TextView userPhoneNumber;
+
     public OTPFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -34,32 +34,33 @@ public class OTPFragment extends Fragment {
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
-         userId = view.findViewById(R.id.tv_userId);
-         userName = view.findViewById(R.id.tv_userName);
-         userRank = view.findViewById(R.id.tv_userRank);
-         userPhoneNumber = view.findViewById(R.id.tv_userPhoneNumber);
-        setUserinfo();
+        userId = view.findViewById(R.id.tv_userId);
+        userName = view.findViewById(R.id.tv_userName);
+        userRank = view.findViewById(R.id.tv_userRank);
+        userPhoneNumber = view.findViewById(R.id.tv_userPhoneNumber);
+        //일단 함수 호출 주석처리해둠(오류 방지)
+//        setUserinfo();
         // Inflate the layout for this fragment
         return view;
 
     }
+
     //viewModel에서 사용자 정보를 꺼내 textView에 표시
     private void setUserinfo() {
-        viewModel.getUserId().observe(getViewLifecycleOwner(), id ->{
+        viewModel.getUserId().observe(getViewLifecycleOwner(), id -> {
             userId.setText(id);
         });
-        viewModel.getUserName().observe(getViewLifecycleOwner(), name->{
+        viewModel.getUserName().observe(getViewLifecycleOwner(), name -> {
             userName.setText(name);
         });
-        viewModel.getUserRank().observe(getViewLifecycleOwner(), rank->{
+        viewModel.getUserRank().observe(getViewLifecycleOwner(), rank -> {
             userRank.setText(rank);
         });
-        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber->{
+        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> {
             userPhoneNumber.setText(phoneNumber);
         });
     }
