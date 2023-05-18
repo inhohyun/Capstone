@@ -2,6 +2,7 @@ package com.ihh.capstone.login;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.ihh.capstone.MainActivity;
 import com.ihh.capstone.R;
+import com.ihh.capstone.ViewModel;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwordArea;
     Button loginBtn;
 
-
+    private ViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordArea = findViewById(R.id.passwordArea);
         loginBtn = findViewById(R.id.loginBtn);
 
+        //viewModel 객체 생성
+        viewModel = new ViewModelProvider(this).get(ViewModel.class);
         setLoginBtn();
     }
 
@@ -66,6 +70,9 @@ public class LoginActivity extends AppCompatActivity {
                         if (login != null && login.getIsSuccess().equals("success")) {
 
                             Log.d("login","success");
+                        //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
+                            viewModel.setUserInfo(login.getUserId(), login.getUserName(), login.getUserRank(),login.getUserPhoneNumber(),login.getUserOtpKey());
+
 
                             Toast.makeText(LoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
 
