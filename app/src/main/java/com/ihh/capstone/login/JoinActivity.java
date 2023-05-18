@@ -30,7 +30,6 @@ public class JoinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_join);
 
         init();
-
         setJoinBtn();
     }
 

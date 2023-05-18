@@ -23,8 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="입력값 타입을 선택해주세요."
                 android:textSize="20sp"
-                android:layout_gravity="center"
-                />
+                android:layout_gravity="center" />
         </LinearLayout>
 
         <LinearLayout

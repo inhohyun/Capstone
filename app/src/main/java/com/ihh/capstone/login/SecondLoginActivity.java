@@ -50,11 +50,9 @@ public class SecondLoginActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
-    //랜덤 인증번호 생성, 주의할 점 : 호출 될때마다 인증번호가 바뀜 -> 인증번호 발송할때만 호출할 것
+    //랜덤 인증번호 생성, 주의할 점 : 인증번호 발송을 클릭했을 때만 호출할 것(번호 바뀜) -> 액티비티 재 실행시 초기화도 고려
     private String createVerifiCode() {
         Random random = new Random();
         int code = random.nextInt(9999 - 1000) + 1000;
