@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".OCR.OCRFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_marginTop="70dp"
         android:layout_width="match_parent"
         android:layout_height="300dp"
@@ -13,12 +13,24 @@
         android:background="@color/grey"
         android:gravity="center">
 <!--        이미지로 할지 텍스트 형태로 이미지를 추가해주세요로 할지-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/selectImageBtn"
+            android:layout_width="65dp"
+            android:layout_height="55dp"
+            android:scaleType="fitXY"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:contentDescription="이미지 선택"
+            android:drawableLeft="@drawable/plus"
+            android:drawablePadding="8dp" />
         <ImageView
-            android:layout_width="70sp"
-            android:layout_height="70sp"
-            android:src="@drawable/plus"
-            android:layout_gravity="center" />
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="이미지가 들어갈 공간"
+            android:textSize="28sp"
+            android:id="@+id/imageView"/>
+    </RelativeLayout>
 
 
     <LinearLayout
@@ -33,7 +45,5 @@
             android:layout_height="wrap_content"
             android:text="이미지의 text가 들어갈 공간"
             android:textSize="28sp"/>
-
-
     </LinearLayout>
 </FrameLayout>
