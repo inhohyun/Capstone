@@ -69,6 +69,7 @@
             android:layout_height="150dp">
 
             <TextView
+                android:id="@+id/tv_OTPCode"
                 android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="30dp"
