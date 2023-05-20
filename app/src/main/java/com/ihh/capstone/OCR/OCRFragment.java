@@ -33,6 +33,7 @@ public class OCRFragment extends Fragment {
     private Button selectImageBtn;
     private ImageView imageView;
     private TextView OCRText;
+
     public OCRFragment() {
         // Required empty public constructor
     }
@@ -57,7 +58,7 @@ public class OCRFragment extends Fragment {
         imageView = view.findViewById(R.id.imageView);
         OCRText = view.findViewById(R.id.tv_OCR);
 
-                selectImageBtn.setOnClickListener(new View.OnClickListener() {
+        selectImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
@@ -78,11 +79,12 @@ public class OCRFragment extends Fragment {
             selectImageBtn.setVisibility(View.GONE);
             imageView.setBackgroundColor(getResources().getColor(android.R.color.white));
 
-            sendImage(imageUri);
+//            sendImage(imageUri);
         }
 
 
     }
+
     //서버에 이미지를 보내고 문자열을 리턴받는 메소드
     private void sendImage(Uri imageUri) {
         File imageFile = new File(imageUri.getPath());
@@ -90,7 +92,7 @@ public class OCRFragment extends Fragment {
         MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://your-server-url.com/api/") // Replace with your server URL
+                .baseUrl("연동할 서버의 url")
                 .build();
 
         OCRService apiService = retrofit.create(OCRService.class);
@@ -109,6 +111,7 @@ public class OCRFragment extends Fragment {
                     //서버와 연동은 성공했으나 문자열 값을 받아오지 못함
                 }
             }
+
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 // 서버와 연결되지 못함
