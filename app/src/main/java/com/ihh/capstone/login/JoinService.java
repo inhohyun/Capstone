@@ -8,7 +8,7 @@ import retrofit2.http.POST;
 
 public interface JoinService {
     @FormUrlEncoded
-    // post 방식으로 데이터를 보낼 건데, 어디로 보낼지
+    // post 방식으로 데이터를 보낼 주소
     @POST("서버의 엔드포인트 URL")
         //보내기만 할것 이므로 void
     Call<Void> requestJoin(
