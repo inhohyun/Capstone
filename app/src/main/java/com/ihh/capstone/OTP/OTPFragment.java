@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ihh.capstone.ApiService;
 import com.ihh.capstone.R;
+import com.ihh.capstone.RetrofitClient;
 import com.ihh.capstone.ViewModel;
 
 import java.util.Timer;
@@ -90,17 +92,15 @@ public class OTPFragment extends Fragment {
 
     //서버에 otpKey를 보내고 otpCode를 리턴받는 함수
     private void convertOTPCode(String otpKey) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("otpCode를 보내줄 서버의 url")
-                .build();
 
-        OTPService optService = retrofit.create(OTPService.class);
-        Call<String> sendTextCall = optService.sendOTPKey(otpKey);
-        sendTextCall.enqueue(new Callback<String>() {
+        ApiService apiService = RetrofitClient.getApiService();
+        Call<OTP> call = apiService.sendOTPKey(otpKey);
+
+        call.enqueue(new Callback<OTP>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<OTP> call, Response<OTP> response) {
                 if (response.isSuccessful()) {
-                    String responseText = response.body();
+                    String responseText = String.valueOf(response.body());
                     //ui에 otpCode 반영
                     userOTPCode.setText(responseText);
 
@@ -110,8 +110,8 @@ public class OTPFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                // 서버 연동 실패
+            public void onFailure(Call<OTP> call, Throwable t) {
+
             }
         });
 

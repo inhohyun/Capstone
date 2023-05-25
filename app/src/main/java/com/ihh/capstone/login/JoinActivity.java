@@ -9,7 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ihh.capstone.ApiService;
 import com.ihh.capstone.R;
+import com.ihh.capstone.RetrofitClient;
 import com.ihh.capstone.StartActivity;
 
 import retrofit2.Call;
@@ -60,14 +62,11 @@ public class JoinActivity extends AppCompatActivity {
                     isGoToJoin = false;
                 }
 
+                //두 비밀번호가 일치할 경우 서버 호출
                 if (isGoToJoin){
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("연결 할 서버의 url")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-                    JoinService joinService = retrofit.create(JoinService.class);
-
-                    joinService.requestJoin(textId, textPw1,textName,textRank,textPhoneNumber).enqueue(new Callback<Void>() {
+                    ApiService apiService = RetrofitClient.getApiService();
+                    Call<Void> call = apiService.requestJoin(textId, textPw1, textName, textRank, textPhoneNumber);
+                    call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             Toast.makeText(JoinActivity.this, "회원가입 되었습니다. 로그인을 진행해주세요.", Toast.LENGTH_SHORT).show();
@@ -76,10 +75,10 @@ public class JoinActivity extends AppCompatActivity {
 //                            Intent intent = new Intent(JoinActivity.this, StartActivity.class);
 //                            startActivity(intent);
                         }
+
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
                             Toast.makeText(JoinActivity.this, "서버에 데이터를 보내지 못했습니다.", Toast.LENGTH_SHORT).show();
-
                         }
                     });
                 }
