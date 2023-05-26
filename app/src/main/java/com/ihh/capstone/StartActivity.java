@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.ihh.capstone.login.JoinActivity;
-import com.ihh.capstone.login.LoginActivity;
+import com.ihh.capstone.login.FirstLoginActivity;
 
 public class StartActivity extends AppCompatActivity {
     Button btn_goLoginPage;
@@ -31,7 +31,7 @@ public class StartActivity extends AppCompatActivity {
         btn_goLoginPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+                Intent intent = new Intent(StartActivity.this, FirstLoginActivity.class);
                 startActivity(intent);
             }
         });
