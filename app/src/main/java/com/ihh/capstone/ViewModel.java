@@ -4,13 +4,24 @@ import androidx.lifecycle.MutableLiveData;
 
 //사용자의 데이터를 viewModel로 따로 관리 : fragment 생명주기상 데이터 초기화 방지
 public class ViewModel extends androidx.lifecycle.ViewModel {
-    private MutableLiveData<String> userId = new MutableLiveData<>();
-    private MutableLiveData<String> userName = new MutableLiveData<>();
-    private MutableLiveData<String> userRank = new MutableLiveData<>();
-    private MutableLiveData<String> userPhoneNumber = new MutableLiveData<>();
+    private MutableLiveData<String> userId;
+    private MutableLiveData<String> userName;
+    private MutableLiveData<String> userRank;
+    private MutableLiveData<String> userPhoneNumber;
 
-    private MutableLiveData<String> userOtpKey = new MutableLiveData<>();
+    private MutableLiveData<String> userOtpKey;
+    public ViewModel(){
+        userId = new MutableLiveData<>();
+        userId.setValue("기본");
+        userName = new MutableLiveData<>();
+        userName.setValue("기본");
+        userRank = new MutableLiveData<>();
+        userRank.setValue("기본");
+        userPhoneNumber = new MutableLiveData<>();
+        userPhoneNumber.setValue("기본");
+        userOtpKey = new MutableLiveData<>();
 
+    }
     //view model에 사용자 정보 저장
     public void setUserInfo(String id, String name, String position, String phoneNumber, String otpKey) {
         userId.setValue(id);
@@ -21,10 +32,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     }
     //get : 저장된 정보를 꺼내쓰는 메소드
-    public LiveData<String> getUserId() {
-        return userId;
-    }
-
+    public LiveData<String> getUserId() { return userId ;}
     public LiveData<String> getUserName() {
         return userName;
     }
@@ -46,7 +54,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         userName.setValue(" ");
         userRank.setValue(" ");
         userPhoneNumber.setValue(" ");
-        userOtpKey.setValue(" ");
+        userOtpKey.setValue("1");
     }
 }
 
