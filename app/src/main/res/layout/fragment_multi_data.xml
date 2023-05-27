@@ -5,7 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MultiData.MultiDataFragment">
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <RadioButton
+            android:id="@+id/radioVoice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="음성" />
+
+        <RadioButton
+            android:id="@+id/radioImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이미지" />
+
+        <RadioButton
+            android:id="@+id/radioText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="텍스트" />
+
+    </RadioGroup>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,6 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/green"
+                android:id="@+id/voice"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -59,6 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/sky_blue"
+                android:id="@+id/image"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -80,6 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/blue"
+                android:id="@+id/text"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:layout_gravity="center"
