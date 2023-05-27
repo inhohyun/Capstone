@@ -27,7 +27,7 @@
             android:name=".login.SecondLoginActivity"
             android:exported="false" />
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".login.FirstLoginActivity"
             android:exported="false" />
         <activity
             android:name=".login.JoinActivity"

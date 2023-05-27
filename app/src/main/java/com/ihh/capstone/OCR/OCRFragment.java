@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ihh.capstone.ApiService;
 import com.ihh.capstone.R;
+import com.ihh.capstone.RetrofitClient;
 
 import java.io.File;
 
@@ -89,22 +91,19 @@ public class OCRFragment extends Fragment {
     private void sendImage(Uri imageUri) {
         File imageFile = new File(imageUri.getPath());
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), imageFile);
+        //imagePart : 서버로 보낼 이미지 데이터
         MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("연동할 서버의 url")
-                .build();
 
-        OCRService apiService = retrofit.create(OCRService.class);
+        ApiService apiService = RetrofitClient.getApiService();
 
-
-        Call<String> uploadCall = apiService.uploadImage(imagePart);
-        uploadCall.enqueue(new Callback<String>() {
+        Call<OCRText> uploadCall = apiService.uploadImage(imagePart);
+        uploadCall.enqueue(new Callback<OCRText>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<OCRText> call, Response<OCRText> response) {
                 //서버에서 무사히 문자열 값을 받은 경우 해당 문자열을 화면에 연동
                 if (response.isSuccessful()) {
-                    String textResponse = response.body();
+                    String textResponse = String.valueOf(response.body());
                     // 정상적으로 값을 받아올시 이를 ui에 연동
                     OCRText.setText(textResponse);
                 } else {
@@ -113,7 +112,7 @@ public class OCRFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<OCRText> call, Throwable t) {
                 // 서버와 연결되지 못함
             }
         });
