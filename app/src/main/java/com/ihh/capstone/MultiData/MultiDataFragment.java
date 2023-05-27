@@ -2,12 +2,14 @@ package com.ihh.capstone.MultiData;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +52,8 @@ public class MultiDataFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         LinearLayout voiceLayout = view.findViewById(R.id.voice);
+        LinearLayout imageLayout = view.findViewById(R.id.image);
+
         voiceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,6 +66,13 @@ public class MultiDataFragment extends Fragment {
                 // 음성인식 시작 startActivityForResult 호출
                 int requestCode = 1; //
                 startActivityForResult(intent, requestCode);
+            }
+        });
+        imageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //imagelayout 클릭 이벤트
+                openGallery();
             }
         });
 
@@ -98,6 +109,18 @@ public class MultiDataFragment extends Fragment {
                 showRadioButtons();
             }
         }
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            // 이미지에 대한 처리를 수행합니다.
+            String imagePath = selectedImageUri.toString(); // 이미지 URI를 변수에 저장하는 경우
+
+            showRadioButtons();
+        }
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, 2);
     }
     private void showRadioButtons() {
         radioGroup.setVisibility(View.VISIBLE); // 라디오 버튼 보이기
