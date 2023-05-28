@@ -1,8 +1,13 @@
 package com.ihh.capstone.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.View;
@@ -12,6 +17,7 @@ import android.widget.Toast;
 
 import com.ihh.capstone.MainActivity;
 import com.ihh.capstone.R;
+import com.ihh.capstone.StartActivity;
 
 import java.util.Random;
 
@@ -28,28 +34,68 @@ public class SecondLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second_login);
         init();
-        setSendSMSBtn();
-        setSecondLoginBtn();
 
-    }
-    //2차 로그인하기 버튼 클릭
-    private void setSecondLoginBtn() {
+        btnSendSMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //check condition for permission
+                if (ContextCompat.checkSelfPermission(SecondLoginActivity.this, Manifest.permission.SEND_SMS)
+                        == PackageManager.PERMISSION_GRANTED){
+                    //권한이 정상적으로 있을때
+                    sendSMS();
+                }
+                //sms권한이 없을떄
+                else{
+                    ActivityCompat.requestPermissions(SecondLoginActivity.this, new String[]{Manifest.permission.SEND_SMS},
+                            100);
+                }
+            }
+        });
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String inputVerifiedCode = inputCheckNum.getText().toString();
-                //인증 성공
-                if (inputVerifiedCode.equals(verifiedCode)){
+                String inputCheck = inputCheckNum.getText().toString();
+                //입력값과 인증코드가 같으면 2차 로그인 성공
+                if(inputCheck == verifiedCode){
                     Toast.makeText(SecondLoginActivity.this, "환영합니다.", Toast.LENGTH_SHORT).show();
+                    //메인화면으로 이동
                     Intent intent = new Intent(SecondLoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }
-                //인증 실패
                 else{
                     Toast.makeText(SecondLoginActivity.this, "인증번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    private void sendSMS() {
+        String phone = phoneNum.getText().toString();
+        verifiedCode = createVerifiCode();
+
+        if(!phone.isEmpty()){
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phone, null, "인증번호 : "+verifiedCode,null,null);
+            Toast.makeText(SecondLoginActivity.this, "인증번호가 발송되었습니다.", Toast.LENGTH_SHORT).show();
+        }
+        //빈 값을 입력했을때
+        else{
+            Toast.makeText(SecondLoginActivity.this, "번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //사용자에게 sms 권한 받기
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            sendSMS();
+        }
+        else{
+            Toast.makeText(SecondLoginActivity.this, "권한이 거부되었습니다.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     //랜덤 인증번호 생성, 주의할 점 : 인증번호 발송을 클릭했을 때만 호출할 것(번호 바뀜) -> 액티비티 재 실행시 초기화도 고려
@@ -58,21 +104,9 @@ public class SecondLoginActivity extends AppCompatActivity {
         int code = random.nextInt(9999 - 1000) + 1000;
         return String.valueOf(code);
     }
-    //sms 보내는 메소드
-    private void sendVerificationCode(String phoneNumber, String verificationCode) {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, verificationCode, null, null);
-    }
+
 
     //인증번호 발송 버튼 클릭
-    private void setSendSMSBtn() {
-        String phoneNumber = phoneNum.getText().toString();
-        //랜덤 인증번호 생성
-        verifiedCode = createVerifiCode();
-        //인증번호 보내기
-         sendVerificationCode(phoneNumber, verifiedCode);
-
-    }
 
     private void init(){
         phoneNum = findViewById(R.id.phoneNumberArea);

@@ -17,9 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Capstone"
         tools:targetApi="31">
-        <activity
-            android:name=".OcrActivity"
-            android:exported="true" />
+
         <activity
             android:name=".StartActivity"
             android:exported="true"></activity>
