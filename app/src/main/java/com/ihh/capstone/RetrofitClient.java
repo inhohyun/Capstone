@@ -6,10 +6,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = " https://caps.thonlog.com/443 ";
+    private static final String BASE_URL = "http://172.30.1.14:8080";
 
     private static Retrofit retrofit;
-
+    //싱글톤 활용해서 retrofit 객체 생성
     public static ApiService getApiService() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()

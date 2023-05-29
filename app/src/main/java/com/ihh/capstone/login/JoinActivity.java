@@ -57,28 +57,37 @@ public class JoinActivity extends AppCompatActivity {
                 String textRank = userRank.getText().toString();
                 String textPhoneNumber = phoneNumber.getText().toString();
                 boolean isGoToJoin = true;
-                if(!textPw1.equals(textPw2)){
+                //비밀번호와 비밀번호 확인이 같은지 확인
+                if (!textPw1.equals(textPw2)) {
                     Toast.makeText(JoinActivity.this, "두 비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show();
                     isGoToJoin = false;
                 }
 
                 //두 비밀번호가 일치할 경우 서버 호출
-                if (isGoToJoin){
+                if (isGoToJoin) {
+                    Join join = new Join(textId, textPw1, textName, textRank, textPhoneNumber);
                     ApiService apiService = RetrofitClient.getApiService();
-                    Call<Void> call = apiService.requestJoin(textId, textPw1, textName, textRank, textPhoneNumber);
+                    Call<Void> call = apiService.requestJoin(join);
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
-                            Toast.makeText(JoinActivity.this, "회원가입 되었습니다. 로그인을 진행해주세요.", Toast.LENGTH_SHORT).show();
-                            //액티비티를 종료해 startActivity로 이동, 문제있을시 intent 사용
-                            finish();
-//                            Intent intent = new Intent(JoinActivity.this, StartActivity.class);
-//                            startActivity(intent);
+                            if (response.isSuccessful()) {
+                                    Toast.makeText(JoinActivity.this, "회원가입 되었습니다. 로그인을 진행해주세요.", Toast.LENGTH_SHORT).show();
+                                    //액티비티를 종료해 startActivity로 이동, 문제있을시 intent 사용
+        //                            finish();
+        //                            Intent intent = new Intent(JoinActivity.this, StartActivity.class);
+        //                            startActivity(intent);
+
+
+                            } else {
+                                Toast.makeText(JoinActivity.this, "body=null, cause: "+response.code(), Toast.LENGTH_LONG).show();
+                            }
+
                         }
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
-                            Toast.makeText(JoinActivity.this, "서버에 데이터를 보내지 못했습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(JoinActivity.this, "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
