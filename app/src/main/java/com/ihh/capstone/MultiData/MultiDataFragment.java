@@ -143,7 +143,9 @@ public class MultiDataFragment extends Fragment {
     }
 
     private void showTextInputDialog() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
         builder.setTitle("텍스트 입력")
                 .setView(R.layout.dialog_text_input)
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {

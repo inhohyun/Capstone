@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MultiData.MultiDataFragment">
+
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/radioVoice"
@@ -31,6 +31,7 @@
             android:text="텍스트" />
 
     </RadioGroup>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,9 +47,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="입력값 타입을 선택해주세요."
-                android:textSize="20sp"
-                android:layout_gravity="center" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -57,76 +58,78 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:weightSum="3">
+
             <LinearLayout
+                android:id="@+id/voice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/green"
-                android:id="@+id/voice"
                 android:layout_weight="1"
+                android:background="@color/green"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/mic"
-                    />
+                    android:src="@drawable/mic" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="음성"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
 
             <LinearLayout
+                android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/sky_blue"
-                android:id="@+id/image"
                 android:layout_weight="1"
+                android:background="@color/sky_blue"
                 android:gravity="center"
                 android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/image_icon"/>
+                    android:src="@drawable/image_icon" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="이미지"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
 
             <LinearLayout
+                android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/blue"
-                android:id="@+id/text"
-                android:layout_weight="1"
-                android:gravity="center"
                 android:layout_gravity="center"
-                android:orientation="vertical"
-                >
+                android:layout_weight="1"
+                android:background="@color/blue"
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/text_icon"/>
+                    android:src="@drawable/text_icon" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="텍스트"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"/>
+                    android:textStyle="bold" />
             </LinearLayout>
-
-
 
 
         </LinearLayout>
