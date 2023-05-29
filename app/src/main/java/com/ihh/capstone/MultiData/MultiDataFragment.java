@@ -1,6 +1,9 @@
 package com.ihh.capstone.MultiData;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.speech.RecognizerIntent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
@@ -53,7 +57,10 @@ public class MultiDataFragment extends Fragment {
 
         LinearLayout voiceLayout = view.findViewById(R.id.voice);
         LinearLayout imageLayout = view.findViewById(R.id.image);
+        LinearLayout textLayout = view.findViewById(R.id.text);
 
+        radioGroup = view.findViewById(R.id.radioGroup);
+        radioGroup.setVisibility(View.GONE);
         voiceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,8 +83,15 @@ public class MultiDataFragment extends Fragment {
             }
         });
 
-        RadioGroup radioGroup = view.findViewById(R.id.radioGroup);
-        radioGroup.setVisibility(View.GONE);
+        textLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // textLayout 클릭 이벤트
+                showTextInputDialog();
+            }
+        });
+
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -95,6 +109,8 @@ public class MultiDataFragment extends Fragment {
                 }
             }
         });
+
+
     }
 
     @Override
@@ -124,5 +140,26 @@ public class MultiDataFragment extends Fragment {
     }
     private void showRadioButtons() {
         radioGroup.setVisibility(View.VISIBLE); // 라디오 버튼 보이기
+    }
+
+    private void showTextInputDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("텍스트 입력")
+                .setView(R.layout.dialog_text_input)
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 확인 버튼이 클릭되었을 때의 처리
+                        Dialog dialogView = (Dialog) dialog;
+                        EditText editText = dialogView.findViewById(R.id.editText);
+                        String inputText = editText.getText().toString();
+                        // inputText 변수에 사용자가 입력한 텍스트 저장
+                        showRadioButtons();
+                    }
+                })
+                .setNegativeButton("취소", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
