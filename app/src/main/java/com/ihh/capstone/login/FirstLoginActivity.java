@@ -48,41 +48,48 @@ public class FirstLoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String textId = emailArea.getText().toString();
                 String textPw = passwordArea.getText().toString();
+                RequestFirstLogin login = new RequestFirstLogin(textId, textPw);
 
                 ApiService apiService = RetrofitClient.getApiService();
 
                 // Make the network request
-                Call<Login> call = apiService.requestLogin(textId, textPw);
+                Call<ResponseLogin> call = apiService.requestLogin(login);
 
-                call.enqueue(new Callback<Login>() {
+                call.enqueue(new Callback<ResponseLogin>() {
                     @Override
-                    public void onResponse(Call<Login> call, Response<Login> response) {
-                        Toast.makeText(FirstLoginActivity.this, "웹 통신 성공", Toast.LENGTH_LONG).show();
-                        Login login = response.body(); // 서버에서 보내줄 데이터 받기
+                    public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
+                        if (response.isSuccessful()){
+                            ResponseLogin isSuccess = response.body(); // 서버에서 보내줄 데이터 받기
+                            //로그인 성공
+                            if (isSuccess != null && isSuccess.getIsSuccess().equals("success")) {
 
-                        //로그인 성공
-                        if (login != null && login.getIsSuccess().equals("success")) {
-
-                            Log.d("login", "success");
-                            //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
-                            //에러시 viewModel 코드 지우고 연결해보기
-                            viewModel.setUserInfo(login.getUserId(), login.getUserName(), login.getUserRank(), login.getUserPhoneNumber(), login.getUserOtpKey());
+                                Log.d("login", "success");
+                                //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
+                                //에러시 viewModel 코드 지우고 연결해보기
+                                viewModel.setUserInfo(isSuccess.getUserId(), isSuccess.getUserName(), isSuccess.getUserRank(), isSuccess.getUserPhoneNumber(), isSuccess.getUserOtpKey());
 
 
-                            Toast.makeText(FirstLoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(FirstLoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(FirstLoginActivity.this, SecondLoginActivity.class);
-                            startActivity(intent);
+                                Intent intent = new Intent(FirstLoginActivity.this, SecondLoginActivity.class);
+                                startActivity(intent);
 
+                            }
+                            //사용자가 입력한 데이터가 서버에 없음
+                            else {
+                                Log.d("login", "fail");
+                            }
                         }
-                        //로그인 실패
+                        //연결 오류
                         else {
-                            Log.d("login", "fail");
+                            Toast.makeText(FirstLoginActivity.this, "body=null, cause: "+response.code(), Toast.LENGTH_LONG).show();
                         }
+
+
                     }
 
                     @Override
-                    public void onFailure(Call<Login> call, Throwable t) {
+                    public void onFailure(Call<ResponseLogin> call, Throwable t) {
                         Toast.makeText(FirstLoginActivity.this, "웹 통신 실패", Toast.LENGTH_LONG).show();
                     }
                 });

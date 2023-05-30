@@ -1,6 +1,6 @@
 package com.ihh.capstone.login;
 
-public class Login {
+public class ResponseLogin {
     private String isSuccess;
     private String userId;
     private String userName;
@@ -9,7 +9,7 @@ public class Login {
     private String userOtpKey;
 
     //서버로부터 리턴받을 값들(로그인 성공 여부, 사용자 정보(아이디, 이름, 직무, 휴대폰 번호), otpKey(서버에 다시 보내서 otpCode를 받을 예정)
-    public Login(String isSuccess, String userId, String userName, String userRank, String userPhoneNumber, String userOtpKey) {
+    public ResponseLogin(String isSuccess, String userId, String userName, String userRank, String userPhoneNumber, String userOtpKey) {
 
         this.isSuccess = isSuccess;
         this.userId = userId;

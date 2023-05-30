@@ -3,7 +3,8 @@ package com.ihh.capstone;
 import com.ihh.capstone.OCR.OCRText;
 import com.ihh.capstone.OTP.OTP;
 import com.ihh.capstone.login.Join;
-import com.ihh.capstone.login.Login;
+import com.ihh.capstone.login.ResponseLogin;
+import com.ihh.capstone.login.RequestFirstLogin;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -17,16 +18,13 @@ public interface ApiService {
 
 
 
-    @POST("register")
+    @POST("/auth/register")
     Call<Void> requestJoin(@Body Join join);
 
     // post 방식으로 데이터를 보낼 건데, 어디로 보낼지
     @POST("/auth/login")
     // 서버에 id, pw 값 보내기
-    Call<Login> requestLogin(
-            @Field("userid") String userid,
-            @Field("userpw") String userpw
-    );
+    Call<ResponseLogin> requestLogin(@Body RequestFirstLogin login);
 
 
     @POST("/auth/otp")
