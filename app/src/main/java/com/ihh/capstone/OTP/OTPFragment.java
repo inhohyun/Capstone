@@ -1,11 +1,8 @@
 package com.ihh.capstone.OTP;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
@@ -16,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ihh.capstone.ApiService;
+import com.ihh.capstone.MainActivity;
 import com.ihh.capstone.R;
 import com.ihh.capstone.RetrofitClient;
-import com.ihh.capstone.StartActivity;
 import com.ihh.capstone.ViewModel;
+import com.ihh.capstone.login.FirstLoginActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,8 +59,7 @@ public class OTPFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
         userId = view.findViewById(R.id.tv_userId);
         userName = view.findViewById(R.id.tv_userName);
@@ -120,13 +118,13 @@ public class OTPFragment extends Fragment {
 
     //서버에 otpKey를 보내고 otpCode를 리턴받는 함수
     private void convertOTPCode(String otpKey) {
-
+        RequestOTPCode sendOtp = new RequestOTPCode(otpKey);
         ApiService apiService = RetrofitClient.getApiService();
-        Call<OTP> call = apiService.sendOTPKey(otpKey);
+        Call<ResponseOTPCode> call = apiService.sendOTPKey(sendOtp);
 
-        call.enqueue(new Callback<OTP>() {
+        call.enqueue(new Callback<ResponseOTPCode>() {
             @Override
-            public void onResponse(Call<OTP> call, Response<OTP> response) {
+            public void onResponse(Call<ResponseOTPCode> call, Response<ResponseOTPCode> response) {
                 if (response.isSuccessful()) {
                     String responseText = String.valueOf(response.body());
                     //ui에 otpCode 반영
@@ -134,12 +132,14 @@ public class OTPFragment extends Fragment {
 
                 } else {
                     //otpCode 반환 실패
+                    Log.d("onResponse But fail", String.valueOf(response.code()));
                 }
             }
 
             @Override
-            public void onFailure(Call<OTP> call, Throwable t) {
+            public void onFailure(Call<ResponseOTPCode> call, Throwable t) {
                 //서버 연동 실패
+                Log.d("onFailure fail", t.getMessage());
             }
         });
     }
@@ -153,7 +153,7 @@ public class OTPFragment extends Fragment {
                 //viewModel 연동시 앱이 종료되는 현상?
 //                 viewModel.initData();
                 viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), otpk -> {
-                    Log.d("됐나?", otpk);
+                    Log.d("logout", otpk);
                 });
 
                 //               Intent intent = new Intent(getActivity(), StartActivity.class);

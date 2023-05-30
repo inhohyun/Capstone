@@ -1,9 +1,9 @@
 package com.ihh.capstone.OTP;
 
-public class OTP {
+public class ResponseOTPCode {
     private String OTPCode;
 
-    public OTP(String otp){this.OTPCode = otp;}
+    public ResponseOTPCode(String otp){this.OTPCode = otp;}
 
     public String getOTPCode(){return OTPCode;}
 
