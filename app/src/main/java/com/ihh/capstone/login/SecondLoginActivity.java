@@ -56,7 +56,7 @@ public class SecondLoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String inputCheck = inputCheckNum.getText().toString();
                 //입력값과 인증코드가 같으면 2차 로그인 성공
-                if(inputCheck == verifiedCode){
+                if(inputCheck.equals(String.valueOf(verifiedCode))){
                     Toast.makeText(SecondLoginActivity.this, "환영합니다.", Toast.LENGTH_SHORT).show();
                     //메인화면으로 이동
                     Intent intent = new Intent(SecondLoginActivity.this, MainActivity.class);
