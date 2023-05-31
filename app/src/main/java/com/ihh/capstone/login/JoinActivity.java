@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +66,7 @@ public class JoinActivity extends AppCompatActivity {
 
                 //두 비밀번호가 일치할 경우 서버 호출
                 if (isGoToJoin) {
+                    Log.d("Join", "JoinTest");
                     Join join = new Join(textId, textPw1, textName, textRank, textPhoneNumber);
                     ApiService apiService = RetrofitClient.getApiService();
                     Call<Void> call = apiService.requestJoin(join);
@@ -73,13 +75,15 @@ public class JoinActivity extends AppCompatActivity {
                         public void onResponse(Call<Void> call, Response<Void> response) {
                             if (response.isSuccessful()) {
                                     Toast.makeText(JoinActivity.this, "회원가입 되었습니다. 로그인을 진행해주세요.", Toast.LENGTH_SHORT).show();
+                                    Log.d("success", String.valueOf(response.code()));
                                     //액티비티를 종료해 startActivity로 이동, 문제있을시 intent 사용
         //                            finish();
-        //                            Intent intent = new Intent(JoinActivity.this, StartActivity.class);
-        //                            startActivity(intent);
+                                    Intent intent = new Intent(JoinActivity.this, StartActivity.class);
+                                    startActivity(intent);
 
 
                             } else {
+                                Log.d("fail", String.valueOf(response.code()));
                                 Toast.makeText(JoinActivity.this, "body=null, cause: "+response.code(), Toast.LENGTH_LONG).show();
                             }
 
@@ -87,6 +91,7 @@ public class JoinActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
+                            Log.d("fail2", String.valueOf(t.getMessage()));
                             Toast.makeText(JoinActivity.this, "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });

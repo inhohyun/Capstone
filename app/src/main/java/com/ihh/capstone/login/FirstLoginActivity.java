@@ -61,9 +61,7 @@ public class FirstLoginActivity extends AppCompatActivity {
                         if (response.isSuccessful()){
                             ResponseLogin isSuccess = response.body(); // 서버에서 보내줄 데이터 받기
                             //로그인 성공
-                            if (isSuccess != null && isSuccess.getIsSuccess().equals("success")) {
-
-                                Log.d("login", "success");
+                                Log.d("login", String.valueOf(response.code()));
                                 //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
                                 //에러시 viewModel 코드 지우고 연결해보기
                                 viewModel.setUserInfo(isSuccess.getUserId(), isSuccess.getUserName(), isSuccess.getUserRank(), isSuccess.getUserPhoneNumber(), isSuccess.getUserOtpKey());
@@ -74,14 +72,10 @@ public class FirstLoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(FirstLoginActivity.this, SecondLoginActivity.class);
                                 startActivity(intent);
 
-                            }
-                            //사용자가 입력한 데이터가 서버에 없음
-                            else {
-                                Log.d("login", "fail");
-                            }
                         }
                         //연결 오류
                         else {
+                            Log.d("id, pw 불일치로 인한 에러", String.valueOf(response.code()));
                             Toast.makeText(FirstLoginActivity.this, "body=null, cause: "+response.code(), Toast.LENGTH_LONG).show();
                         }
 
@@ -90,7 +84,7 @@ public class FirstLoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseLogin> call, Throwable t) {
-                        Toast.makeText(FirstLoginActivity.this, "웹 통신 실패", Toast.LENGTH_LONG).show();
+                        Log.d("웹 통신 실패", String.valueOf(t.getMessage()));
                     }
                 });
 
