@@ -2,7 +2,10 @@ package com.ihh.capstone.OTP;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
@@ -58,6 +61,7 @@ public class OTPFragment extends Fragment {
     }
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
@@ -71,14 +75,43 @@ public class OTPFragment extends Fragment {
         //타이머를 조작할 handler 초기화
         handler = new Handler();
         //fragment에서 viewModel 초기화시 onCreateView or onViewCreateed에서 초기화해야 함
-        viewModel = new ViewModelProvider((ViewModelStoreOwner) getViewLifecycleOwner()).get(ViewModel.class);
+        viewModel = new ViewModelProvider(OTPFragment.this).get(ViewModel.class);
+        //아래 구문 자체가 호출이 안되는데...흠...
 
         startTimer();
-        setUserinfo();
         logoutClick();
 
         return view;
 
+    }
+
+    //사용자 정보 표시하기
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getUserId().observe(getViewLifecycleOwner(), id->{
+            String userIdString = String.valueOf(id); // Convert id to string
+            Log.d("ViewModelId", userIdString);
+        });
+
+        viewModel.getUserName().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String value) {
+                userName.setText("성함: " + value);
+            }
+        });
+        viewModel.getUserRank().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String value) {
+                userRank.setText("직급: " + value);
+            }
+        });
+        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String value) {
+                userPhoneNumber.setText("핸드폰 번호: " + value);
+            }
+        });
     }
 
     private void startTimer() {
@@ -164,20 +197,5 @@ public class OTPFragment extends Fragment {
 
 
     //viewModel에서 사용자 정보를 꺼내 textView에 표시
-    private void setUserinfo() {
-        //     안되면  OTPFragment.this -> getViewLifecycleOwner() 바꿔보기
-        viewModel.getUserId().observe(getViewLifecycleOwner(), id -> {
-            userId.setText("ID: " + id);
-        });
-        viewModel.getUserName().observe(getViewLifecycleOwner(), name -> {
-            userName.setText("성함: " + name);
-        });
-        viewModel.getUserRank().observe(getViewLifecycleOwner(), rank -> {
-            userRank.setText("직급: " + rank);
-        });
-        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), phoneNumber -> {
-            userPhoneNumber.setText("핸드폰 번호: " + phoneNumber);
-        });
 
-    }
 }

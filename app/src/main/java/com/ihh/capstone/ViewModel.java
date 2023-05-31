@@ -12,13 +12,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private MutableLiveData<String> userOtpKey;
     public ViewModel(){
         userId = new MutableLiveData<>();
-        userId.setValue("기본");
+
         userName = new MutableLiveData<>();
-        userName.setValue("기본");
+
         userRank = new MutableLiveData<>();
-        userRank.setValue("기본");
         userPhoneNumber = new MutableLiveData<>();
-        userPhoneNumber.setValue("기본");
         userOtpKey = new MutableLiveData<>();
 
     }

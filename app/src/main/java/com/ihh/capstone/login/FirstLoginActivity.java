@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ihh.capstone.ApiService;
+import com.ihh.capstone.MainActivity;
 import com.ihh.capstone.R;
 import com.ihh.capstone.RetrofitClient;
 import com.ihh.capstone.ViewModel;
@@ -58,25 +59,34 @@ public class FirstLoginActivity extends AppCompatActivity {
                 call.enqueue(new Callback<ResponseLogin>() {
                     @Override
                     public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
+
                         if (response.isSuccessful()){
-                            ResponseLogin isSuccess = response.body(); // 서버에서 보내줄 데이터 받기
+
+                            ResponseLogin responseLogin =  response.body();;
                             //로그인 성공
                                 Log.d("login", String.valueOf(response.code()));
                                 //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
-                                //에러시 viewModel 코드 지우고 연결해보기
-                                viewModel.setUserInfo(isSuccess.getUserId(), isSuccess.getUserName(), isSuccess.getUserRank(), isSuccess.getUserPhoneNumber(), isSuccess.getUserOtpKey());
+                                if (responseLogin != null){
+                                    if (responseLogin.getId() != null){
+                                        Log.d("correct", responseLogin.getId());
+                                        viewModel.setUserInfo(responseLogin.getId(), responseLogin.getName(), responseLogin.getRank(), responseLogin.getPhone(), responseLogin.getSecret());
 
+                                        Toast.makeText(FirstLoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
 
-                                Toast.makeText(FirstLoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
-
-                                Intent intent = new Intent(FirstLoginActivity.this, SecondLoginActivity.class);
-                                startActivity(intent);
+                                        Intent intent = new Intent(FirstLoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else{
+                                        Log.d("idValue", "null");
+                                    }
+                                }
 
                         }
-                        //연결 오류
+
                         else {
                             Log.d("id, pw 불일치로 인한 에러", String.valueOf(response.code()));
-                            Toast.makeText(FirstLoginActivity.this, "body=null, cause: "+response.code(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(FirstLoginActivity.this, "ID 또는 PW가 일치하지 않습니다.", Toast.LENGTH_LONG).show();
                         }
 
 
@@ -85,6 +95,7 @@ public class FirstLoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ResponseLogin> call, Throwable t) {
                         Log.d("웹 통신 실패", String.valueOf(t.getMessage()));
+                        Toast.makeText(FirstLoginActivity.this, "데이터를 불러오지 못했습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show();
                     }
                 });
 
