@@ -1,4 +1,5 @@
 package com.ihh.capstone;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,16 +11,16 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private MutableLiveData<String> userPhoneNumber;
 
     private MutableLiveData<String> userOtpKey;
-    public ViewModel(){
-        userId = new MutableLiveData<>();
 
+    public ViewModel() {
+        userId = new MutableLiveData<>("default");
         userName = new MutableLiveData<>();
-
         userRank = new MutableLiveData<>();
         userPhoneNumber = new MutableLiveData<>();
         userOtpKey = new MutableLiveData<>();
 
     }
+
     //view model에 사용자 정보 저장
     public void setUserInfo(String id, String name, String position, String phoneNumber, String otpKey) {
         userId.setValue(id);
@@ -29,8 +30,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         userOtpKey.setValue(otpKey);
 
     }
+
     //get : 저장된 정보를 꺼내쓰는 메소드
-    public LiveData<String> getUserId() { return userId ;}
+    public LiveData<String> getUserId() {
+        return userId;
+    }
+
     public LiveData<String> getUserName() {
         return userName;
     }
@@ -43,16 +48,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return userPhoneNumber;
     }
 
-    public LiveData<String> getUserOtpKey(){
+    public LiveData<String> getUserOtpKey() {
         return userOtpKey;
     }
 
-    public void initData(){
-        userId.setValue(" ");
-        userName.setValue(" ");
-        userRank.setValue(" ");
-        userPhoneNumber.setValue(" ");
-        userOtpKey.setValue("1");
-    }
 }
 

@@ -57,9 +57,9 @@ public class OTPFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //viewModel의 데이터가 초기화 될경우 getActivity를 통해 수정 -> 여러 액티비티에서 공유하기에 requireActivity가 맞긴 함
+        viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
     }
-
 
 
     @Override
@@ -74,44 +74,30 @@ public class OTPFragment extends Fragment {
         logoutBtn = view.findViewById(R.id.btn_logout);
         //타이머를 조작할 handler 초기화
         handler = new Handler();
-        //fragment에서 viewModel 초기화시 onCreateView or onViewCreateed에서 초기화해야 함
-        viewModel = new ViewModelProvider(OTPFragment.this).get(ViewModel.class);
-        //아래 구문 자체가 호출이 안되는데...흠...
-
         startTimer();
         logoutClick();
 
-        return view;
 
+        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+            convertOTPCode(key);
+        });
+
+        return view;
     }
 
-    //사용자 정보 표시하기
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel.getUserId().observe(getViewLifecycleOwner(), id->{
-            String userIdString = String.valueOf(id); // Convert id to string
-            Log.d("ViewModelId", userIdString);
+        //사용자 정보 표시하기
+        viewModel.getUserId().observe(getViewLifecycleOwner(), id -> {
+            userId.setText("ID : " + id);
+            Log.d("ViewModelId", id);
         });
 
-        viewModel.getUserName().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String value) {
-                userName.setText("성함: " + value);
-            }
-        });
-        viewModel.getUserRank().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String value) {
-                userRank.setText("직급: " + value);
-            }
-        });
-        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String value) {
-                userPhoneNumber.setText("핸드폰 번호: " + value);
-            }
-        });
+        viewModel.getUserName().observe(getViewLifecycleOwner(), value -> userName.setText("성함: " + value));
+        viewModel.getUserRank().observe(getViewLifecycleOwner(), value -> userRank.setText("직급: " + value));
+        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), value -> userPhoneNumber.setText("핸드폰 번호: " + value));
     }
 
     private void startTimer() {
