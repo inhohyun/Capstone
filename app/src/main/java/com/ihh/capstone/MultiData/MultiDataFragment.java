@@ -14,23 +14,37 @@ import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
+import com.ihh.capstone.ApiService;
 import com.ihh.capstone.R;
+import com.ihh.capstone.RetrofitClient;
+import com.ihh.capstone.login.RequestFirstLogin;
+import com.ihh.capstone.login.ResponseLogin;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MultiDataFragment extends Fragment {
 
     private String voiceText; // 음성인식 결과 저장 변수
     private RadioGroup radioGroup;
+    private String returnType;
+    private TextView convertData;
 
     public MultiDataFragment() {
         // Required empty public constructor
@@ -46,8 +60,10 @@ public class MultiDataFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_multi_data, container, false);
+        convertData = view.findViewById(R.id.tv_convertData);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_multi_data, container, false);
+        return view;
     }
 
     @Override
@@ -146,6 +162,7 @@ public class MultiDataFragment extends Fragment {
 
     private void showRadioButtons(String inputData) {
 
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
 
         //라디오 버튼이 다이얼로그로 뜨도록 구현
@@ -158,6 +175,12 @@ public class MultiDataFragment extends Fragment {
                 //inputData, radio 클릭 결과를 활용해 서버 호출하기
                 Dialog dialogView = (Dialog) dialog;
                 radioGroup = dialogView.findViewById(R.id.radioGroup);
+
+                //api 객체 생성
+                RequestMultiData multiData = new RequestMultiData(returnType, inputData);
+                ApiService apiService = RetrofitClient.getApiService();
+
+
                 //출력 받을 데이터를 선택
                 radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     //서버에 보낼 클래스에 해당 버튼의 결과 setter로 저장해 보내기
@@ -167,17 +190,86 @@ public class MultiDataFragment extends Fragment {
                         switch (checkedId) {
                             case R.id.radioVoice:
                                 // 음성 선택됨
+                                returnType = "voice";
+
+                                multiData.setReturnType(returnType);
+                                Call<ResponseMultiData> call1 = apiService.requestMultiData(multiData);
+                                call1.enqueue(new Callback<ResponseMultiData>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseMultiData> call, Response<ResponseMultiData> response) {
+                                        if (response.isSuccessful()) {
+                                            Log.d("convert", String.valueOf(response.code()));
+                                            String data = String.valueOf(response.body());
+                                            convertData.setText(data);
+                                        } else {
+                                            Log.d("convertFail1", String.valueOf(response.code()));
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseMultiData> call, Throwable t) {
+                                        Log.d("convertFail2", String.valueOf(t.getMessage()));
+                                    }
+                                });
+
                                 break;
                             case R.id.radioImage:
                                 // 이미지 선택됨
+                                returnType = "Image";
+                                multiData.setReturnType(returnType);
+                                ;
+                                Call<ResponseMultiData> call2 = apiService.requestMultiData(multiData);
+                                call2.enqueue(new Callback<ResponseMultiData>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseMultiData> call, Response<ResponseMultiData> response) {
+                                        if (response.isSuccessful()) {
+                                            Log.d("convert", String.valueOf(response.code()));
+                                            String data = String.valueOf(response.body());
+                                            convertData.setText(data);
+                                        } else {
+                                            Log.d("convertFail1", String.valueOf(response.code()));
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseMultiData> call, Throwable t) {
+                                        Log.d("convertFail2", String.valueOf(t.getMessage()));
+                                    }
+                                });
                                 break;
                             case R.id.radioText:
                                 // 텍스트 선택됨
+                                returnType = "text";
+                                multiData.setReturnType(returnType);
+                                Call<ResponseMultiData> call3 = apiService.requestMultiData(multiData);
+                                call3.enqueue(new Callback<ResponseMultiData>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseMultiData> call, Response<ResponseMultiData> response) {
+                                        if (response.isSuccessful()) {
+                                            Log.d("convert", String.valueOf(response.code()));
+                                            String data = String.valueOf(response.body());
+                                            convertData.setText(data);
+                                        } else {
+                                            Log.d("convertFail1", String.valueOf(response.code()));
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseMultiData> call, Throwable t) {
+                                        Log.d("convertFail2", String.valueOf(t.getMessage()));
+                                    }
+                                });
+
                                 break;
                         }
                     }
                 });
             }
+
+
         });
         dialogBuilder.setNegativeButton("취소", null);
         AlertDialog dialog = dialogBuilder.create();

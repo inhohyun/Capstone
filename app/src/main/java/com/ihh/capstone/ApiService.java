@@ -1,6 +1,8 @@
 package com.ihh.capstone;
 
 
+import com.ihh.capstone.MultiData.RequestMultiData;
+import com.ihh.capstone.MultiData.ResponseMultiData;
 import com.ihh.capstone.OCR.OCRText;
 import com.ihh.capstone.OTP.RequestOTPCode;
 import com.ihh.capstone.OTP.ResponseOTPCode;
@@ -38,5 +40,6 @@ public interface ApiService {
 
 //        @GET("text")
 //        Call<String> getText();
-
+    @POST("정해지지 않음")
+    Call<ResponseMultiData> requestMultiData(@Body RequestMultiData requestData);
 }
