@@ -37,7 +37,6 @@ public class MultiDataFragment extends Fragment {
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +58,8 @@ public class MultiDataFragment extends Fragment {
         LinearLayout imageLayout = view.findViewById(R.id.image);
         LinearLayout textLayout = view.findViewById(R.id.text);
 
-        radioGroup = view.findViewById(R.id.radioGroup);
-        radioGroup.setVisibility(View.GONE);
+
+        //음성 입력을 클릭한 경우
         voiceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +74,7 @@ public class MultiDataFragment extends Fragment {
                 startActivityForResult(intent, requestCode);
             }
         });
+        //이미지 입력을 클릭한 경우
         imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,31 +82,12 @@ public class MultiDataFragment extends Fragment {
                 openGallery();
             }
         });
-
+        //텍스트 입력을 클릭한 경우
         textLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // textLayout 클릭 이벤트
                 showTextInputDialog();
-            }
-        });
-
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // 라디오 버튼 선택 이벤트 처리
-                switch (checkedId) {
-                    case R.id.radioVoice:
-                        // 음성 선택됨
-                        break;
-                    case R.id.radioImage:
-                        // 이미지 선택됨
-                        break;
-                    case R.id.radioText:
-                        // 텍스트 선택됨
-                        break;
-                }
             }
         });
 
@@ -122,7 +103,7 @@ public class MultiDataFragment extends Fragment {
             if (voiceResults != null && !voiceResults.isEmpty()) {
                 String voiceText = voiceResults.get(0);
                 // voiceText 변수에 음성인식 결과가 저장
-                showRadioButtons();
+                showRadioButtons(voiceText);
             }
         }
         if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
@@ -130,7 +111,7 @@ public class MultiDataFragment extends Fragment {
             // 이미지에 대한 처리를 수행합니다.
             String imagePath = selectedImageUri.toString(); // 이미지 URI를 변수에 저장하는 경우
 
-            showRadioButtons();
+            showRadioButtons(imagePath);
         }
     }
 
@@ -138,9 +119,7 @@ public class MultiDataFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, 2);
     }
-    private void showRadioButtons() {
-        radioGroup.setVisibility(View.VISIBLE); // 라디오 버튼 보이기
-    }
+
 
     private void showTextInputDialog() {
 
@@ -156,12 +135,52 @@ public class MultiDataFragment extends Fragment {
                         EditText editText = dialogView.findViewById(R.id.editText);
                         String inputText = editText.getText().toString();
                         // inputText 변수에 사용자가 입력한 텍스트 저장
-                        showRadioButtons();
+                        showRadioButtons(inputText);
                     }
                 })
                 .setNegativeButton("취소", null);
 
         AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showRadioButtons(String inputData) {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
+
+        //라디오 버튼이 다이얼로그로 뜨도록 구현
+
+        dialogBuilder.setView(R.layout.dialog_radio);
+        dialogBuilder.setTitle("출력 형식을 선택해주세요");
+        dialogBuilder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //inputData, radio 클릭 결과를 활용해 서버 호출하기
+                Dialog dialogView = (Dialog) dialog;
+                radioGroup = dialogView.findViewById(R.id.radioGroup);
+                //출력 받을 데이터를 선택
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    //서버에 보낼 클래스에 해당 버튼의 결과 setter로 저장해 보내기
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        // 라디오 버튼 선택 이벤트 처리
+                        switch (checkedId) {
+                            case R.id.radioVoice:
+                                // 음성 선택됨
+                                break;
+                            case R.id.radioImage:
+                                // 이미지 선택됨
+                                break;
+                            case R.id.radioText:
+                                // 텍스트 선택됨
+                                break;
+                        }
+                    }
+                });
+            }
+        });
+        dialogBuilder.setNegativeButton("취소", null);
+        AlertDialog dialog = dialogBuilder.create();
         dialog.show();
     }
 }

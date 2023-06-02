@@ -74,14 +74,14 @@ public class OTPFragment extends Fragment {
         logoutBtn = view.findViewById(R.id.btn_logout);
         //타이머를 조작할 handler 초기화
         handler = new Handler();
-        startTimer();
+
         logoutClick();
 
-
-        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
-            convertOTPCode(key);
-        });
-
+//
+//        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+//            convertOTPCode(key);
+//        });
+//        startTimer();
         return view;
     }
 
