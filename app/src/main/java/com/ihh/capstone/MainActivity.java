@@ -3,6 +3,7 @@ package com.ihh.capstone;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import com.ihh.capstone.OTP.OTPFragment;
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     FrameLayout container;
-
+    private ViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +26,18 @@ public class MainActivity extends AppCompatActivity {
 
         init();
         settingBottomListener();
+        //First
+        String receivedId = getIntent().getStringExtra("id");
+        String receivedName = getIntent().getStringExtra("name");
+        String receivedRank = getIntent().getStringExtra("rank");
+        String receivedPhone = getIntent().getStringExtra("phone");
+        String receivedOTPKey = getIntent().getStringExtra("otpKey");
 
-        
+        //viewModel 객체 생성
+        viewModel = new ViewModelProvider(this).get(ViewModel.class);
+        viewModel.setUserInfo(receivedId, receivedName, receivedRank, receivedPhone, receivedOTPKey);
+
+
     }
 
 

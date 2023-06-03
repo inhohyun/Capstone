@@ -60,31 +60,35 @@ public class FirstLoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ResponseLogin> call, Response<ResponseLogin> response) {
 
-                        if (response.isSuccessful()){
+                        if (response.isSuccessful()) {
 
-                            ResponseLogin responseLogin =  response.body();;
+                            ResponseLogin responseLogin = response.body();
+                            ;
                             //로그인 성공
-                                Log.d("login", String.valueOf(response.code()));
-                                //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
-                                if (responseLogin != null){
-                                    if (responseLogin.getId() != null){
-                                        Log.d("correct", responseLogin.getId());
-                                        viewModel.setUserInfo(responseLogin.getId(), responseLogin.getName(), responseLogin.getRank(), responseLogin.getPhone(), responseLogin.getSecret());
+                            Log.d("login", String.valueOf(response.code()));
+                            //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
+                            if (responseLogin != null) {
+                                if (responseLogin.getId() != null) {
+                                    Log.d("correct", responseLogin.getId());
+                                    viewModel.setUserInfo(responseLogin.getId(), responseLogin.getName(), responseLogin.getRank(), responseLogin.getPhone(), responseLogin.getSecret());
 
-                                        Toast.makeText(FirstLoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FirstLoginActivity.this, "1차 로그인 성공", Toast.LENGTH_SHORT).show();
 
-                                        Intent intent = new Intent(FirstLoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                    else{
-                                        Log.d("idValue", "null");
-                                    }
+                                    //그냥 intent할때 데이터를 넘겨주고 넘거받은 쪽에서 viewModel에 저장하는 걸로
+                                    //2차 로그인 추가할때 한 번 더 거쳐가는 것으로 수정
+                                    Intent intent = new Intent(FirstLoginActivity.this, MainActivity.class);
+                                    intent.putExtra("id", responseLogin.getId());
+                                    intent.putExtra("name", responseLogin.getName());
+                                    intent.putExtra("rank", responseLogin.getRank());
+                                    intent.putExtra("phone", responseLogin.getPhone());
+                                    intent.putExtra("otpKey", responseLogin.getSecret());
+                                    startActivity(intent);
+                                } else {
+                                    Log.d("idValue", "null");
                                 }
+                            }
 
-                        }
-
-                        else {
+                        } else {
                             Log.d("id, pw 불일치로 인한 에러", String.valueOf(response.code()));
                             Toast.makeText(FirstLoginActivity.this, "ID 또는 PW가 일치하지 않습니다.", Toast.LENGTH_LONG).show();
                         }

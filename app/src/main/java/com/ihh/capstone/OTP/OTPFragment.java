@@ -48,7 +48,7 @@ public class OTPFragment extends Fragment {
     private TextView timerTextView;
 
     private Button logoutBtn;
-
+    private String mOTPKey;
     public OTPFragment() {
         // Required empty public constructor
     }
@@ -72,33 +72,61 @@ public class OTPFragment extends Fragment {
         userOTPCode = view.findViewById(R.id.tv_OTPCode);
         timerTextView = view.findViewById(R.id.timerTextView);
         logoutBtn = view.findViewById(R.id.btn_logout);
-        //타이머를 조작할 handler 초기화
-        handler = new Handler();
 
-        logoutClick();
+        Log.d("OTPFragment", "start");
 
-//
-//        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
-//            convertOTPCode(key);
-//        });
-//        startTimer();
-        return view;
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         //사용자 정보 표시하기
-        viewModel.getUserId().observe(getViewLifecycleOwner(), id -> {
-            userId.setText("ID : " + id);
-            Log.d("ViewModelId", id);
-        });
+        viewModel.getUserId().observe(getViewLifecycleOwner(), value -> userId.setText("ID: " + value));
 
         viewModel.getUserName().observe(getViewLifecycleOwner(), value -> userName.setText("성함: " + value));
         viewModel.getUserRank().observe(getViewLifecycleOwner(), value -> userRank.setText("직급: " + value));
         viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), value -> userPhoneNumber.setText("핸드폰 번호: " + value));
+
+        logoutClick();
+        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+            Log.d("otpKey", key);
+            convertOTPCode(key);
+        });
+
+        //타이머를 조작할 handler 초기화
+        handler = new Handler();
+        startTimer();
+        return view;
     }
+
+    //서버에 otpKey를 보내고 otpCode를 리턴받는 함수
+    private void convertOTPCode(String otpKey) {
+        RequestOTPCode sendOtp = new RequestOTPCode(otpKey);
+
+        ApiService apiService = RetrofitClient.getApiService();
+
+        Call<ResponseOTPCode> call = apiService.sendOTPKey(sendOtp);
+
+        call.enqueue(new Callback<ResponseOTPCode>() {
+            @Override
+            public void onResponse(Call<ResponseOTPCode> call, Response<ResponseOTPCode> response) {
+                if (response.isSuccessful()) {
+                    String responseText = String.valueOf(response.body());
+                    //ui에 otpCode 반영
+                    userOTPCode.setText(responseText);
+                    mOTPKey = responseText;
+                    Log.d("OTPKey", responseText);
+
+                } else {
+                    //otpCode 반환 실패
+                    Log.d("onResponse But fail", String.valueOf(response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseOTPCode> call, Throwable t) {
+                //서버 연동 실패
+                Log.d("onFailure fail", t.getMessage());
+            }
+        });
+    }
+
+
 
     private void startTimer() {
         timer = new Timer();
@@ -110,9 +138,19 @@ public class OTPFragment extends Fragment {
                     updateTimerUI();
                 } else {
                     //30초에 한 번씩 otpCode 갱신 및 시간 초기화
-                    viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
-                        convertOTPCode(key);
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+                                Log.d("reCallOTPCode", "reCallOTPCode");
+                                convertOTPCode(key);
+                                userOTPCode.setText(mOTPKey);
+
+                            });
+
+                        }
                     });
+
                     restartTimer();
                 }
             }
@@ -135,33 +173,7 @@ public class OTPFragment extends Fragment {
     }
 
 
-    //서버에 otpKey를 보내고 otpCode를 리턴받는 함수
-    private void convertOTPCode(String otpKey) {
-        RequestOTPCode sendOtp = new RequestOTPCode(otpKey);
-        ApiService apiService = RetrofitClient.getApiService();
-        Call<ResponseOTPCode> call = apiService.sendOTPKey(sendOtp);
 
-        call.enqueue(new Callback<ResponseOTPCode>() {
-            @Override
-            public void onResponse(Call<ResponseOTPCode> call, Response<ResponseOTPCode> response) {
-                if (response.isSuccessful()) {
-                    String responseText = String.valueOf(response.body());
-                    //ui에 otpCode 반영
-                    userOTPCode.setText(responseText);
-
-                } else {
-                    //otpCode 반환 실패
-                    Log.d("onResponse But fail", String.valueOf(response.code()));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseOTPCode> call, Throwable t) {
-                //서버 연동 실패
-                Log.d("onFailure fail", t.getMessage());
-            }
-        });
-    }
 
 
     private void logoutClick() {

@@ -1,12 +1,13 @@
 package com.ihh.capstone.OTP;
 
 public class ResponseOTPCode {
-    private String OTPCode;
+    private String token;
 
-    public ResponseOTPCode(String otp){this.OTPCode = otp;}
+    public ResponseOTPCode(String token){this.token = token;}
 
-    public String getOTPCode(){return OTPCode;}
+    public String getOTPCode(){return token;}
 
-    public void setOTPCode(String otpCode){this.OTPCode = otpCode;}
+    public void setOTPCode(String token){this.token = token;}
 
 }
+
