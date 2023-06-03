@@ -52,5 +52,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return userOtpKey;
     }
 
+    public void initData(){
+        userId.setValue("");
+        userName.setValue("");
+        userRank.setValue("");
+        userPhoneNumber.setValue("");
+        userOtpKey.setValue("");
+    }
 }
 

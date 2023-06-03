@@ -1,5 +1,6 @@
 package com.ihh.capstone.OTP;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.ihh.capstone.ApiService;
 import com.ihh.capstone.MainActivity;
 import com.ihh.capstone.R;
 import com.ihh.capstone.RetrofitClient;
+import com.ihh.capstone.StartActivity;
 import com.ihh.capstone.ViewModel;
 import com.ihh.capstone.login.FirstLoginActivity;
 
@@ -179,13 +181,10 @@ public class OTPFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //viewModel 연동시 앱이 종료되는 현상?
-//                 viewModel.initData();
-                viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), otpk -> {
-                    Log.d("logout", otpk);
-                });
-
-                //               Intent intent = new Intent(getActivity(), StartActivity.class);
-                //               startActivity(intent);
+                   viewModel.initData();
+                     Toast.makeText(getActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                   Intent intent = new Intent(getActivity(), StartActivity.class);
+                   startActivity(intent);
             }
         });
     }
