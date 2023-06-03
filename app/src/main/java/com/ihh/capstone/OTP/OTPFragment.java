@@ -49,6 +49,7 @@ public class OTPFragment extends Fragment {
 
     private Button logoutBtn;
     private String mOTPKey;
+
     public OTPFragment() {
         // Required empty public constructor
     }
@@ -106,11 +107,11 @@ public class OTPFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseOTPCode> call, Response<ResponseOTPCode> response) {
                 if (response.isSuccessful()) {
-                    String responseText = String.valueOf(response.body());
+                    ResponseOTPCode otpCode = response.body();
                     //ui에 otpCode 반영
-                    userOTPCode.setText(responseText);
-                    mOTPKey = responseText;
-                    Log.d("OTPKey", responseText);
+                    userOTPCode.setText(otpCode.getOTPCode());
+                    mOTPKey = otpCode.getOTPCode();
+                    Log.d("OTPKey", otpCode.getOTPCode());
 
                 } else {
                     //otpCode 반환 실패
@@ -125,7 +126,6 @@ public class OTPFragment extends Fragment {
             }
         });
     }
-
 
 
     private void startTimer() {
@@ -171,9 +171,6 @@ public class OTPFragment extends Fragment {
             }
         });
     }
-
-
-
 
 
     private void logoutClick() {
