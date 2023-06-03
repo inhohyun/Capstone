@@ -175,8 +175,8 @@ public class MultiDataFragment extends Fragment {
                 //inputData, radio 클릭 결과를 활용해 서버 호출하기
                 Dialog dialogView = (Dialog) dialog;
                 radioGroup = dialogView.findViewById(R.id.radioGroup);
-
-                //api 객체 생성
+                Log.d("dialog", "확인");
+                //api 객체 생
                 RequestMultiData multiData = new RequestMultiData(returnType, inputData);
                 ApiService apiService = RetrofitClient.getApiService();
 
@@ -186,6 +186,7 @@ public class MultiDataFragment extends Fragment {
                     //서버에 보낼 클래스에 해당 버튼의 결과 setter로 저장해 보내기
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        Log.d("radio", "test");
                         // 라디오 버튼 선택 이벤트 처리
                         switch (checkedId) {
                             case R.id.radioVoice:
@@ -242,6 +243,7 @@ public class MultiDataFragment extends Fragment {
                             case R.id.radioText:
                                 // 텍스트 선택됨
                                 returnType = "text";
+                                Log.d("text", returnType);
                                 multiData.setReturnType(returnType);
                                 Call<ResponseMultiData> call3 = apiService.requestMultiData(multiData);
                                 call3.enqueue(new Callback<ResponseMultiData>() {

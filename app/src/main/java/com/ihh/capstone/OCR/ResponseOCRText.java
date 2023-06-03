@@ -1,9 +1,9 @@
 package com.ihh.capstone.OCR;
 
-public class OCRText {
+public class ResponseOCRText {
     private String OCRText;
 
-    public OCRText(String ocrText){
+    public ResponseOCRText(String ocrText){
         this.OCRText = ocrText;
     }
 

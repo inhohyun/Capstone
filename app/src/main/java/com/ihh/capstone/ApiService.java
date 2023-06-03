@@ -3,7 +3,8 @@ package com.ihh.capstone;
 
 import com.ihh.capstone.MultiData.RequestMultiData;
 import com.ihh.capstone.MultiData.ResponseMultiData;
-import com.ihh.capstone.OCR.OCRText;
+import com.ihh.capstone.OCR.RequestOCRImage;
+import com.ihh.capstone.OCR.ResponseOCRText;
 import com.ihh.capstone.OTP.RequestOTPCode;
 import com.ihh.capstone.OTP.ResponseOTPCode;
 import com.ihh.capstone.login.Join;
@@ -34,9 +35,8 @@ public interface ApiService {
     Call<ResponseOTPCode> sendOTPKey(@Body RequestOTPCode otpKey);
 
     @Multipart
-    @POST("OCR 이미지를 받아 text를 보내줄 서버의 엔드포인트")
-    Call<OCRText> uploadImage(@Part MultipartBody.Part image);
-
+    @POST("/image")
+    Call<ResponseOCRText> uploadImage(@Part MultipartBody.Part image);
 
 //        @GET("text")
 //        Call<String> getText();
