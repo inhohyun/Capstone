@@ -19,6 +19,8 @@
         android:theme="@style/Theme.Capstone"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <service android:name=".OTP.TimerService" />
+
 
         <activity
             android:name=".StartActivity"

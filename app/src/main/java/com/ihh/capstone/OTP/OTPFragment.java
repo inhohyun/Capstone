@@ -1,16 +1,18 @@
 package com.ihh.capstone.OTP;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ihh.capstone.ApiService;
-import com.ihh.capstone.MainActivity;
 import com.ihh.capstone.R;
 import com.ihh.capstone.RetrofitClient;
 import com.ihh.capstone.StartActivity;
 import com.ihh.capstone.ViewModel;
-import com.ihh.capstone.login.FirstLoginActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,27 +35,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class OTPFragment extends Fragment {
+public class OTPFragment extends Fragment implements TimerService.TimerCallback {
     private ViewModel viewModel;
     private TextView userId;
     private TextView userName;
     private TextView userRank;
     private TextView userPhoneNumber;
-
     private TextView userOTPCode;
-
-    private Handler handler;
-    private Timer timer;
-    private int secondsPassed = 30;
-    private TextView timerTextView;
-
     private Button logoutBtn;
-    private String mOTPKey;
-
-    public OTPFragment() {
-        // Required empty public constructor
-    }
-
+    private boolean isServiceBound = false;
+    private ServiceConnection serviceConnection;
+    private BroadcastReceiver broadcastReceiver;
+    private TextView countdownTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,37 +55,119 @@ public class OTPFragment extends Fragment {
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_otp, container, false);
+        countdownTextView = view.findViewById(R.id.countdownTextView);
+
         userId = view.findViewById(R.id.tv_userId);
         userName = view.findViewById(R.id.tv_userName);
         userRank = view.findViewById(R.id.tv_userRank);
         userPhoneNumber = view.findViewById(R.id.tv_userPhoneNumber);
         userOTPCode = view.findViewById(R.id.tv_OTPCode);
-        timerTextView = view.findViewById(R.id.timerTextView);
+
         logoutBtn = view.findViewById(R.id.btn_logout);
 
         Log.d("OTPFragment", "start");
 
         //사용자 정보 표시하기
         viewModel.getUserId().observe(getViewLifecycleOwner(), value -> userId.setText("ID: " + value));
-
         viewModel.getUserName().observe(getViewLifecycleOwner(), value -> userName.setText("성함: " + value));
         viewModel.getUserRank().observe(getViewLifecycleOwner(), value -> userRank.setText("직급: " + value));
         viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), value -> userPhoneNumber.setText("핸드폰 번호: " + value));
-
         logoutClick();
+
         viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
             Log.d("otpKey", key);
             convertOTPCode(key);
+
         });
 
-        //타이머를 조작할 handler 초기화
-        handler = new Handler();
-        startTimer();
         return view;
+    }
+
+    @Override
+    public void onTimerCallback() {
+
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        TimerService.TimerBinder binder = (TimerService.TimerBinder) iBinder;
+        isServiceBound = true;
+        binder.getService().setTimerCallback(this);
+        updateCountdownUI(binder.getService().getCountdownSeconds());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        bindTimerService();
+        registerBroadcastReceiver();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        unbindTimerService();
+        unregisterBroadcastReceiver();
+    }
+
+    private void bindTimerService() {
+        serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+
+                TimerService.TimerBinder binder = (TimerService.TimerBinder) iBinder;
+                isServiceBound = true;
+                updateCountdownUI(binder.getService().getCountdownSeconds());
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                isServiceBound = false;
+            }
+        };
+        Intent intent = new Intent(getActivity(), TimerService.class);
+        getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void unbindTimerService() {
+        if (isServiceBound) {
+            getActivity().unbindService(serviceConnection);
+            isServiceBound = false;
+        }
+    }
+
+    private void registerBroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int countdown = intent.getIntExtra("countdown", 0);
+                updateCountdownUI(countdown);
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter(TimerService.ACTION_TIMER_UPDATE);
+        getActivity().registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    private void unregisterBroadcastReceiver() {
+        if (broadcastReceiver != null) {
+            getActivity().unregisterReceiver(broadcastReceiver);
+        }
+    }
+
+    private void updateCountdownUI(int countdown) {
+        countdownTextView.setText(String.valueOf(countdown));
+        if (countdown == 1) {
+            viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+                Log.d("otpKey", key);
+                convertOTPCode(key);
+
+            });
+        }
     }
 
     //서버에 otpKey를 보내고 otpCode를 리턴받는 함수
@@ -112,7 +185,6 @@ public class OTPFragment extends Fragment {
                     ResponseOTPCode otpCode = response.body();
                     //ui에 otpCode 반영
                     userOTPCode.setText(otpCode.getOTPCode());
-                    mOTPKey = otpCode.getOTPCode();
                     Log.d("OTPKey", otpCode.getOTPCode());
 
                 } else {
@@ -129,67 +201,17 @@ public class OTPFragment extends Fragment {
         });
     }
 
-
-    private void startTimer() {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (secondsPassed > 0) {
-                    secondsPassed--;
-                    updateTimerUI();
-                } else {
-                    //30초에 한 번씩 otpCode 갱신 및 시간 초기화
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
-                                Log.d("reCallOTPCode", "reCallOTPCode");
-                                convertOTPCode(key);
-                                userOTPCode.setText(mOTPKey);
-
-                            });
-
-                        }
-                    });
-
-                    restartTimer();
-                }
-            }
-        }, 0, 1000); // Delay of 0 milliseconds and repeat every 1 second
-    }
-
-    private void restartTimer() {
-        timer.cancel();
-        secondsPassed = 30;
-        startTimer();
-    }
-
-    private void updateTimerUI() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                timerTextView.setText(String.valueOf(secondsPassed));
-            }
-        });
-    }
-
-
+    //로그아웃 버튼 클릭
     private void logoutClick() {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 //viewModel 연동시 앱이 종료되는 현상?
-                   viewModel.initData();
-                     Toast.makeText(getActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
-                   Intent intent = new Intent(getActivity(), StartActivity.class);
-                   startActivity(intent);
+                viewModel.initData();
+                Toast.makeText(getActivity(), "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), StartActivity.class);
+                startActivity(intent);
             }
         });
     }
-
-
-    //viewModel에서 사용자 정보를 꺼내 textView에 표시
-
 }
