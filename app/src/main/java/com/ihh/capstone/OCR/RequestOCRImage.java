@@ -3,18 +3,18 @@ package com.ihh.capstone.OCR;
 import okhttp3.MultipartBody;
 
 public class RequestOCRImage {
-    private MultipartBody.Part imageUri;
+    private String BASE64Image;
 
-    public RequestOCRImage(MultipartBody.Part imageUri) {
-        this.imageUri = imageUri;
+    public RequestOCRImage(String BASE64Image) {
+        this.BASE64Image = BASE64Image;
     }
 
 
-    public MultipartBody.Part getImageUri() {
-        return imageUri;
+    public String getBASE64Image() {
+        return BASE64Image;
     }
 
-    public void setImageUri(MultipartBody.Part imageUri) {
-        this.imageUri = imageUri;
+    public void setBASE64Image(String BASE64Image) {
+        this.BASE64Image = BASE64Image;
     }
 }

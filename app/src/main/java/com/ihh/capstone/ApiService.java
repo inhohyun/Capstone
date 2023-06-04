@@ -11,7 +11,6 @@ import com.ihh.capstone.login.Join;
 import com.ihh.capstone.login.RequestFirstLogin;
 import com.ihh.capstone.login.ResponseLogin;
 
-import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Multipart;
@@ -19,7 +18,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 
 public interface ApiService {
-
 
 
     @POST("/auth/register")
@@ -36,10 +34,9 @@ public interface ApiService {
 
     @Multipart
     @POST("/image")
-    Call<ResponseOCRText> uploadImage(@Part MultipartBody.Part image);
+    Call<ResponseOCRText> uploadImage(@Body RequestOCRImage BASE64image);
 
-//        @GET("text")
-//        Call<String> getText();
+
     @POST("정해지지 않음")
     Call<ResponseMultiData> requestMultiData(@Body RequestMultiData requestData);
 }

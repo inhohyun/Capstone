@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,6 +52,7 @@ public class OCRFragment extends Fragment {
     private ImageView imageView;
     private TextView OCRText;
     private Uri mImageUrl;
+    private String encodedImage;
     public OCRFragment() {
         // Required empty public constructor
     }
@@ -94,35 +98,48 @@ public class OCRFragment extends Fragment {
             selectImageBtn.setVisibility(View.GONE);
             imageView.setBackgroundColor(getResources().getColor(android.R.color.white));
 
-            sendImage(imageUri);
+
+
+            //uri를 비트맵으로 변환하고 이를 다시 base64로 인코딩, 이를 서버로 보냄
+            sendImage(BitmapToString(UriToBitmap(imageUri)));
         }
 
 
     }
+    //uri 값을 비트맵 값으로 변환하고 변환한 비트맵 값을 base64로 인코딩하기
+    public Bitmap UriToBitmap(Uri imageuri) {
+        Bitmap bm = null;
+        try {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                //에러가 있을 경우 requireActivity를 바꿔볼 것
+                bm = ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireActivity().getContentResolver(), imageuri));
+            } else {
+                bm = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageuri);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bm;
+    }
+    //비트맵을 Base64로 인코딩하여 리턴
+    public static String BitmapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+        byte[] bytes = baos.toByteArray();
+        String temp = Base64.encodeToString(bytes, Base64.DEFAULT);
+        return temp;
+    }
 
     //서버에 이미지를 보내고 문자열을 리턴받는 메소드
-    private void sendImage(Uri imageUri) {
-            mImageUrl = imageUri;
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_STORAGE_PERMISSION);
-        } else {
-            // Permission is already granted, proceed with file access
-            // Your code to access the file goes here
-            // 서버는 이미지 uri 값을 그대로 참조할 수 없음, uri : android 기기의 로컬 파일 경로
-            //사진의 절대 경로를 가져옴
-            File file = new File(getAbsolutePath(imageUri, requireContext()));
-            //request 형식으로 전환
-            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), file);
-            //form-data 형식으로 전환
-            MultipartBody.Part body = MultipartBody.Part.createFormData("profile", file.getName(), requestFile);
+    private void sendImage(String sendImageData) {
 
 
 
             ApiService apiService = RetrofitClient.getApiService();
             //서버와 호환이 안될경우 data class 활용용
-//            RequestOCRImage image = new RequestOCRImage(body);
-            Call<ResponseOCRText> uploadCall = apiService.uploadImage(body);
+            RequestOCRImage image = new RequestOCRImage(sendImageData);
+
+            Call<ResponseOCRText> uploadCall = apiService.uploadImage(image);
             uploadCall.enqueue(new Callback<ResponseOCRText>() {
                 @Override
                 public void onResponse(Call<ResponseOCRText> call, Response<ResponseOCRText> response) {
@@ -147,7 +164,7 @@ public class OCRFragment extends Fragment {
             });
         }
 
-    }
+
 
     //이미지의 로컬 주소를 절대 경로로 전환
     public String getAbsolutePath(Uri path, Context context) {
