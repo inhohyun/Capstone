@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
@@ -27,6 +28,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.ihh.capstone.ApiService;
 import com.ihh.capstone.MainActivity;
 import com.ihh.capstone.R;
@@ -37,6 +43,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -50,9 +58,15 @@ public class OCRFragment extends Fragment {
     private static final int REQUEST_IMAGE_PICK = 1;
     private Button selectImageBtn;
     private ImageView imageView;
-    private TextView OCRText;
+
     private Uri mImageUrl;
     private String encodedImage;
+
+    //상품명과 가격이 저장될 리스트
+    private List<String> itemList;
+    private List<Float> priceList;
+
+    private BarChart barChart;
     public OCRFragment() {
         // Required empty public constructor
     }
@@ -60,6 +74,9 @@ public class OCRFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        itemList = new ArrayList<>();
+        priceList = new ArrayList<>();
+
     }
 
     @Override
@@ -75,7 +92,8 @@ public class OCRFragment extends Fragment {
 
         selectImageBtn = view.findViewById(R.id.selectImageBtn);
         imageView = view.findViewById(R.id.imageView);
-        OCRText = view.findViewById(R.id.tv_OCR);
+        barChart = view.findViewById(R.id.barChart);
+
 
         selectImageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +119,14 @@ public class OCRFragment extends Fragment {
 
 
             //uri를 비트맵으로 변환하고 이를 다시 base64로 인코딩, 이를 서버로 보냄
-            sendImage(BitmapToString(UriToBitmap(imageUri)));
+//            sendImage(BitmapToString(UriToBitmap(imageUri)));
+
+            //여기에서 두 문자열에 값 추가하고 그래프 그리기
+            //영수증을 리스트에 추가하는 부분만 구현되면 될듯
+            itemList.add("item");
+            priceList.add(1000F);
+
+            showBarGraph();
         }
 
 
@@ -188,6 +213,80 @@ public class OCRFragment extends Fragment {
             } else {
                 // Permission denied, handle accordingly (e.g., show an error message)
             }
+        }
+    }
+
+    //두 리스트를 활용해 그래프 그리기
+    private void showBarGraph() {
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        for (int i = 0; i < priceList.size(); i++) {
+            entries.add(new BarEntry(i, priceList.get(i)));
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "Price");
+        dataSet.setColor(Color.BLUE);
+
+        ArrayList<String> xLabels = new ArrayList<>(itemList);
+
+        BarData barData = new BarData(dataSet);
+        barChart.setData(barData);
+        barChart.getXAxis().setValueFormatter(new LabelFormatter(xLabels));
+
+        // Set the maximum value for the y-axis
+        float maxYValue = getMaxYValue(priceList);
+        barChart.getAxisLeft().setAxisMaximum(maxYValue);
+
+        // Set the minimum value for the y-axis
+        barChart.getAxisLeft().setAxisMinimum(0f);
+
+        // Customize the x-axis appearance
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        barChart.getXAxis().setGranularity(1f);
+        barChart.getXAxis().setDrawAxisLine(true);
+        barChart.getXAxis().setDrawGridLines(false);
+        barChart.getXAxis().setAxisLineColor(Color.BLACK);
+        barChart.getXAxis().setTextColor(Color.BLACK);
+
+        // Set the x-axis label rotation and position
+        barChart.getXAxis().setLabelRotationAngle(45f);
+        barChart.getXAxis().setLabelCount(xLabels.size());
+        barChart.getXAxis().setXOffset(10f);
+        barChart.getXAxis().setYOffset(10f);
+
+        // Customize the y-axis appearance
+        barChart.getAxisRight().setEnabled(false);
+        barChart.getAxisLeft().setAxisLineColor(Color.BLACK);
+        barChart.getAxisLeft().setTextColor(Color.BLACK);
+
+        barChart.getDescription().setText("");
+        barChart.animateY(1000);
+        barChart.invalidate();
+    }
+
+    private float getMaxYValue(List<Float> values) {
+        float max = 0;
+        for (Float value : values) {
+            if (value > max) {
+                max = value;
+            }
+        }
+        return max + 1000;
+    }
+
+    private static class LabelFormatter extends com.github.mikephil.charting.formatter.ValueFormatter {
+        private final List<String> labels;
+
+        LabelFormatter(List<String> labels) {
+            this.labels = labels;
+        }
+
+        @Override
+        public String getFormattedValue(float value) {
+            int index = (int) value;
+            if (index >= 0 && index < labels.size()) {
+                return labels.get(index);
+            }
+            return "";
         }
     }
 }

@@ -70,18 +70,18 @@ public class OTPFragment extends Fragment implements TimerService.TimerCallback 
 
         Log.d("OTPFragment", "start");
 
-        //사용자 정보 표시하기
-        viewModel.getUserId().observe(getViewLifecycleOwner(), value -> userId.setText("ID: " + value));
-        viewModel.getUserName().observe(getViewLifecycleOwner(), value -> userName.setText("성함: " + value));
-        viewModel.getUserRank().observe(getViewLifecycleOwner(), value -> userRank.setText("직급: " + value));
-        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), value -> userPhoneNumber.setText("핸드폰 번호: " + value));
+//        //사용자 정보 표시하기
+//        viewModel.getUserId().observe(getViewLifecycleOwner(), value -> userId.setText("ID: " + value));
+//        viewModel.getUserName().observe(getViewLifecycleOwner(), value -> userName.setText("성함: " + value));
+//        viewModel.getUserRank().observe(getViewLifecycleOwner(), value -> userRank.setText("직급: " + value));
+//        viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), value -> userPhoneNumber.setText("핸드폰 번호: " + value));
         logoutClick();
 
-        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
-            Log.d("otpKey", key);
-            convertOTPCode(key);
-
-        });
+//        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+//            Log.d("otpKey", key);
+//            convertOTPCode(key);
+//
+//        });
 
         return view;
     }

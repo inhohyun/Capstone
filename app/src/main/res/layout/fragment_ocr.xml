@@ -38,13 +38,11 @@
         android:layout_marginTop="415dp"
         android:layout_height="315dp"
         >
-        <TextView
-            android:id="@+id/tv_OCR"
-            android:layout_marginTop="40dp"
-            android:layout_marginStart="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="이미지의 text가 들어갈 공간"
-            android:textSize="28sp"/>
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp" />
+
     </LinearLayout>
 </FrameLayout>
