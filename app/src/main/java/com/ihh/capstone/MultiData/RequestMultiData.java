@@ -1,25 +1,19 @@
 package com.ihh.capstone.MultiData;
 
 public class RequestMultiData {
-    private String returnType;
-    private String requestData;
 
-    public RequestMultiData(String returnType, String requestData){
-        this.returnType = returnType;
-        this.requestData = requestData;
+    private String BASE64Data;
+
+    public RequestMultiData(String requestData){
+
+        this.BASE64Data = requestData;
 
     }
-    public String getReturnType(){
-        return returnType;
+    public String getBASE64Data(){
+        return BASE64Data;
     }
-    public void setReturnType(String returnType){
-        this.returnType = returnType;
-    }
-    public String getRequestData(){
-        return requestData;
-    }
-    public void setRequestData(String requestData){
-        this.requestData = requestData;
+    public void setBASE64Data(String BASE64Data){
+        this.BASE64Data = BASE64Data;
     }
 
 }

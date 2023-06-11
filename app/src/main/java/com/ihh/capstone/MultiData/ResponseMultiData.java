@@ -1,14 +1,14 @@
 package com.ihh.capstone.MultiData;
 
 public class ResponseMultiData {
-    private String ResponseData;
+    private String BASE64Data;
 
     ResponseMultiData(String ResponseData){
-        this.ResponseData = ResponseData;
+        this.BASE64Data = ResponseData;
     }
 
-    public String getResponseData(){return ResponseData;}
+    public String getBASE64Data(){return BASE64Data;}
 
-    public void setResponseData(String ResponseData){this.ResponseData = ResponseData;}
+    public void setBASE64Data(String ResponseData){this.BASE64Data = ResponseData;}
 
 }
