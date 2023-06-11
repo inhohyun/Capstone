@@ -32,7 +32,8 @@ public interface ApiService {
     @POST("/auth/otp")
     Call<ResponseOTPCode> sendOTPKey(@Body RequestOTPCode secret);
 
-    @Multipart
+
+
     @POST("/image")
     Call<ResponseOCRText> uploadImage(@Body RequestOCRImage BASE64image);
 

@@ -63,7 +63,7 @@ public class FirstLoginActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
 
                             ResponseLogin responseLogin = response.body();
-                            ;
+
                             //로그인 성공
                             Log.d("login", String.valueOf(response.code()));
                             //사용자 정보 viewModel에 저장, 서버에서 login에 setter로 저장해준 값을 getter를 통해 가져와서 viewModel에 저장
@@ -76,12 +76,13 @@ public class FirstLoginActivity extends AppCompatActivity {
 
                                     //그냥 intent할때 데이터를 넘겨주고 넘거받은 쪽에서 viewModel에 저장하는 걸로
                                     //2차 로그인 추가할때 한 번 더 거쳐가는 것으로 수정
-                                    Intent intent = new Intent(FirstLoginActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(FirstLoginActivity.this, SecondLoginActivity.class);
                                     intent.putExtra("id", responseLogin.getId());
                                     intent.putExtra("name", responseLogin.getName());
                                     intent.putExtra("rank", responseLogin.getRank());
                                     intent.putExtra("phone", responseLogin.getPhone());
                                     intent.putExtra("otpKey", responseLogin.getSecret());
+
                                     startActivity(intent);
                                 } else {
                                     Log.d("idValue", "null");

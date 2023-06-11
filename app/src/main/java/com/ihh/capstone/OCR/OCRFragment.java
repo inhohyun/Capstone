@@ -119,12 +119,16 @@ public class OCRFragment extends Fragment {
 
 
             //uri를 비트맵으로 변환하고 이를 다시 base64로 인코딩, 이를 서버로 보냄
-//            sendImage(BitmapToString(UriToBitmap(imageUri)));
+            sendImage(BitmapToString(UriToBitmap(imageUri)));
 
             //여기에서 두 문자열에 값 추가하고 그래프 그리기
-            //영수증을 리스트에 추가하는 부분만 구현되면 될듯
-            itemList.add("item");
-            priceList.add(1000F);
+            //아래는 예시로 넣어본 데이터
+//            itemList.add("숙주볶음");
+//            priceList.add(18000F);
+//            itemList.add("새로");
+//            priceList.add(25000F);
+//            itemList.add("생합탕");
+//            priceList.add(20000F);
 
             showBarGraph();
         }
@@ -155,7 +159,7 @@ public class OCRFragment extends Fragment {
         return temp;
     }
 
-    //서버에 이미지를 보내고 문자열을 리턴받는 메소드
+    //서버에 이미지를 보내고 상품명과 가격정보를 리턴받기
     private void sendImage(String sendImageData) {
 
 
@@ -170,11 +174,14 @@ public class OCRFragment extends Fragment {
                 public void onResponse(Call<ResponseOCRText> call, Response<ResponseOCRText> response) {
                     //서버에서 무사히 문자열 값을 받은 경우 해당 문자열을 화면에 연동
                     if (response.isSuccessful()) {
+                        //data class에 저장
+                        ResponseOCRText responseOCRText = response.body();
+                        itemList = responseOCRText.getItemName();
+                        priceList = responseOCRText.getItemPrice();
+
                         Log.d("OCR", String.valueOf(response.code()));
 
-//                    String textResponse = String.valueOf(response.body());
-//                    // 정상적으로 값을 받아올시 이를 ui에 연동
-//                    OCRText.setText(textResponse);
+                    //두 문자열을 저장
                     } else {
                         //서버와 연동은 성공했으나 문자열 값을 받아오지 못함
                         Log.d("OCRfFail1", String.valueOf(response.code()));
@@ -191,7 +198,7 @@ public class OCRFragment extends Fragment {
 
 
 
-    //이미지의 로컬 주소를 절대 경로로 전환
+    //이미지의 로컬 주소를 절대 경로로 전환(사용안할듯, 절대 경로 대신 base64값으로 전달)
     public String getAbsolutePath(Uri path, Context context) {
         String[] projection = { MediaStore.Images.Media.DATA };
         Cursor cursor = context.getContentResolver().query(path, projection, null, null, null);

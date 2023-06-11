@@ -35,6 +35,13 @@ public class SecondLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_second_login);
         init();
 
+        //First
+        String receivedId = getIntent().getStringExtra("id");
+        String receivedName = getIntent().getStringExtra("name");
+        String receivedRank = getIntent().getStringExtra("rank");
+        String receivedPhone = getIntent().getStringExtra("phone");
+        String receivedOTPKey = getIntent().getStringExtra("otpKey");
+
         btnSendSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,12 +61,20 @@ public class SecondLoginActivity extends AppCompatActivity {
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String inputCheck = inputCheckNum.getText().toString();
                 //입력값과 인증코드가 같으면 2차 로그인 성공
                 if(inputCheck.equals(String.valueOf(verifiedCode))){
                     Toast.makeText(SecondLoginActivity.this, "환영합니다.", Toast.LENGTH_SHORT).show();
                     //메인화면으로 이동
                     Intent intent = new Intent(SecondLoginActivity.this, MainActivity.class);
+
+                    intent.putExtra("id", receivedId);
+                    intent.putExtra("name", receivedName);
+                    intent.putExtra("rank", receivedRank);
+                    intent.putExtra("phone", receivedPhone);
+                    intent.putExtra("otpKey", receivedOTPKey);
+
                     startActivity(intent);
                 }
                 else{
