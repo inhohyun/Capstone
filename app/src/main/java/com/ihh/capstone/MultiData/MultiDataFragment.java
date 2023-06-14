@@ -1,8 +1,10 @@
 package com.ihh.capstone.MultiData;
 
-import android.app.Activity;
+import
+android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -19,6 +21,7 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Base64;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.vision.text.TextBlock;
 import com.ihh.capstone.ApiService;
 import com.ihh.capstone.R;
 import com.ihh.capstone.RetrofitClient;
@@ -47,7 +51,8 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.text.TextRecognizer;
 
 public class MultiDataFragment extends Fragment {
 
@@ -57,6 +62,7 @@ public class MultiDataFragment extends Fragment {
     private ImageView convertImage;
     private TextToSpeech tts;
     private String inputData;
+
     public MultiDataFragment() {
         // Required empty public constructor
     }
@@ -146,7 +152,9 @@ public class MultiDataFragment extends Fragment {
         if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
             Uri selectedImageUri = data.getData();
             // 이미지에 대한 처리를 수행합니다.
-
+            Log.d("inputImage", "image");
+            inputData = readTextFromImageUri(requireContext(), selectedImageUri);
+            showRadioButtons(inputData);
             //이미지 uri를 base64로 인코딩한 값을 전달
 //            showRadioButtons(encodeImageUriToBase64(selectedImageUri));
         }
@@ -202,13 +210,14 @@ public class MultiDataFragment extends Fragment {
                 //위에까지는 정상작동
                 //출력 받을 데이터를 선택
                 int selectedId = radioGroup.getCheckedRadioButtonId();
-                switch (selectedId){
+                switch (selectedId) {
                     case R.id.radioVoice:
                         Log.d("radio", "voice");
                         tts.speak(inputData, TextToSpeech.QUEUE_FLUSH, null);
                         break;
                     case R.id.radioImage:
                         Log.d("radio", "Image");
+                        //이미지로 출력 미구현
                         break;
                     case R.id.radioText:
                         Log.d("radio", "text");
@@ -266,5 +275,36 @@ public class MultiDataFragment extends Fragment {
         return new String(decodedBytes, StandardCharsets.UTF_8);
     }
 
+    //ocr 기능
+    private String readTextFromImageUri(Context context, Uri imageUri) {
+        try {
+            // 이미지 URI를 비트맵으로 변환
+            Bitmap imageBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(imageUri));
 
+            // TextRecognizer 초기화
+            TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
+
+            if (!textRecognizer.isOperational()) {
+                // OCR이 작동되지 않을 경우 예외 처리
+                return "OCR이 작동되지 않습니다.";
+            }
+
+            // 이미지에서 텍스트 감지
+            Frame frame = new Frame.Builder().setBitmap(imageBitmap).build();
+            SparseArray<TextBlock> textBlocks = textRecognizer.detect(frame);
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < textBlocks.size(); i++) {
+                TextBlock textBlock = textBlocks.valueAt(i);
+                stringBuilder.append(textBlock.getValue());
+                stringBuilder.append("\n");
+            }
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            Log.e("ReadTextFromImage", "Error: " + e.getMessage());
+            return "문자를 읽는 중 오류가 발생했습니다.";
+        }
+
+    }
 }
