@@ -77,11 +77,11 @@ public class OTPFragment extends Fragment implements TimerService.TimerCallback 
         viewModel.getUserPhoneNumber().observe(getViewLifecycleOwner(), value -> userPhoneNumber.setText("핸드폰 번호: " + value));
         logoutClick();
 
-        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
-            Log.d("otpKey", key);
-            convertOTPCode(key);
-
-        });
+//        viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+//            Log.d("otpKey", key);
+//            convertOTPCode(key);
+//
+//        });
 
         return view;
     }
@@ -162,18 +162,18 @@ public class OTPFragment extends Fragment implements TimerService.TimerCallback 
     private void updateCountdownUI(int countdown) {
         countdownTextView.setText(String.valueOf(countdown));
         if (countdown == 1) {
-            viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
-                Log.d("otpKey", key);
-                convertOTPCode(key);
-
-            });
+//            viewModel.getUserOtpKey().observe(getViewLifecycleOwner(), key -> {
+//                Log.d("otpKey", key);
+//                convertOTPCode(key);
+//
+//            });
+            convertOTPCode("OTP");
         }
     }
 
     //서버에 otpKey를 보내고 otpCode를 리턴받는 함수
     private void convertOTPCode(String otpKey) {
         RequestOTPCode sendOtp = new RequestOTPCode(otpKey);
-
         ApiService apiService = RetrofitClient.getApiService();
 
         Call<ResponseOTPCode> call = apiService.sendOTPKey(sendOtp);

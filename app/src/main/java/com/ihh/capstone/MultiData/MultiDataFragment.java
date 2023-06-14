@@ -53,11 +53,10 @@ public class MultiDataFragment extends Fragment {
 
     private String voiceText; // 음성인식 결과 저장 변수
     private RadioGroup radioGroup;
-    private String returnType;
     private TextView convertData;
     private ImageView convertImage;
     private TextToSpeech tts;
-
+    private String inputData;
     public MultiDataFragment() {
         // Required empty public constructor
     }
@@ -82,10 +81,6 @@ public class MultiDataFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_multi_data, container, false);
         convertData = view.findViewById(R.id.tv_convertData);
-        convertImage = view.findViewById(R.id.iv_convertData);
-        //초기 시작시 이미지뷰는 안보이게
-        convertImage.setVisibility(View.INVISIBLE);
-
 
         // Inflate the layout for this fragment
         return view;
@@ -144,9 +139,8 @@ public class MultiDataFragment extends Fragment {
             if (voiceResults != null && !voiceResults.isEmpty()) {
                 String voiceText = voiceResults.get(0);
                 // voiceText 변수에 음성인식 결과가 저장
-
-                //저장한 음성의 문자열을 base64로 인코딩해 서버로 전달
-                showRadioButtons(encodeStringToBase64(voiceText));
+                inputData = voiceText;
+                showRadioButtons(inputData);
             }
         }
         if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
@@ -154,7 +148,7 @@ public class MultiDataFragment extends Fragment {
             // 이미지에 대한 처리를 수행합니다.
 
             //이미지 uri를 base64로 인코딩한 값을 전달
-            showRadioButtons(encodeImageUriToBase64(selectedImageUri));
+//            showRadioButtons(encodeImageUriToBase64(selectedImageUri));
         }
     }
 
@@ -164,6 +158,7 @@ public class MultiDataFragment extends Fragment {
     }
 
 
+    //텍스트로 입력
     private void showTextInputDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -178,9 +173,9 @@ public class MultiDataFragment extends Fragment {
                         EditText editText = dialogView.findViewById(R.id.editText);
                         String inputText = editText.getText().toString();
                         // inputText 변수에 사용자가 입력한 텍스트 저장
-
+                        inputData = inputText;
                         //입력받은 문자열을 base64로 인코딩해 서버로 전달
-                        showRadioButtons(encodeStringToBase64(inputText));
+                        showRadioButtons(inputData);
                     }
                 })
                 .setNegativeButton("취소", null);
@@ -190,7 +185,6 @@ public class MultiDataFragment extends Fragment {
     }
 
     //출력값을 선택하는 버튼 활성화, 버튼 클릭시 바로 서버 호출
-    //inputData 값은 base64로 인코딩된 값임
     private void showRadioButtons(String inputData) {
 
 
@@ -202,118 +196,27 @@ public class MultiDataFragment extends Fragment {
         dialogBuilder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //inputData, radio 클릭 결과를 활용해 서버 호출하기
                 Dialog dialogView = (Dialog) dialog;
                 radioGroup = dialogView.findViewById(R.id.radioGroup);
                 Log.d("dialog", "확인");
-                //inputData를 base64로 인코딩하는 작업 필요
-                //전송 데이터 객체 생성
-                RequestMultiData multiData = new RequestMultiData(inputData);
-                ApiService apiService = RetrofitClient.getApiService();
-
+                //위에까지는 정상작동
                 //출력 받을 데이터를 선택
-                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    //서버에 보낼 클래스에 해당 버튼의 결과 setter로 저장해 보내기
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        Log.d("radio", "test");
-                        // 라디오 버튼 선택 이벤트 처리
-                        switch (checkedId) {
-                            case R.id.radioVoice:
-                                // 음성 선택됨(완료)
-                                Log.d("voice", "returnVoice");
-                                Call<ResponseMultiData> call1 = apiService.requestMultiData(multiData);
-                                call1.enqueue(new Callback<ResponseMultiData>() {
-                                    @Override
-                                    public void onResponse(Call<ResponseMultiData> call, Response<ResponseMultiData> response) {
-                                        if (response.isSuccessful()) {
-                                            Log.d("convertVoice", String.valueOf(response.code()));
-
-                                            String data = String.valueOf(response.body());
-                                            //data를 디코딩하고 이를 음성으로 출력하기(작성예정)
-                                            String base64String = data;
-                                            String decodedString = decodeBase64ToString(base64String);
-                                            //문자열을 음성으로 출력
-                                            tts.speak(decodedString, TextToSpeech.QUEUE_FLUSH, null);
-                                        } else {
-                                            Log.d("convertFail1", String.valueOf(response.code()));
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<ResponseMultiData> call, Throwable t) {
-                                        Log.d("convertFail2", String.valueOf(t.getMessage()));
-                                    }
-                                });
-
-                                break;
-                            case R.id.radioImage:
-                                // 이미지 선택됨(완료)
-                                returnType = "Image";
-
-                                Call<ResponseMultiData> call2 = apiService.requestMultiData(multiData);
-                                call2.enqueue(new Callback<ResponseMultiData>() {
-                                    @Override
-                                    public void onResponse(Call<ResponseMultiData> call, Response<ResponseMultiData> response) {
-                                        if (response.isSuccessful()) {
-
-                                            Log.d("convert", String.valueOf(response.code()));
-                                            String data = String.valueOf(response.body());
-                                            //data를 원래 이미지로 디코딩하고 이를 imageView로 보여줌
-                                            convertImage.setImageBitmap(decodeBase64ToImage(data));
-                                            //textView는 안보이게 설정
-                                            convertData.setVisibility(View.INVISIBLE);
-
-                                        } else {
-                                            Log.d("convertFail1", String.valueOf(response.code()));
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<ResponseMultiData> call, Throwable t) {
-                                        Log.d("convertFail2", String.valueOf(t.getMessage()));
-                                    }
-                                });
-                                break;
-                            case R.id.radioText:
-                                // 텍스트 선택됨(완료)
-                                returnType = "text";
-                                Log.d("text", returnType);
-                                Call<ResponseMultiData> call3 = apiService.requestMultiData(multiData);
-                                call3.enqueue(new Callback<ResponseMultiData>() {
-                                    @Override
-                                    public void onResponse(Call<ResponseMultiData> call, Response<ResponseMultiData> response) {
-                                        if (response.isSuccessful()) {
-                                            Log.d("convert", String.valueOf(response.code()));
-                                            String base64StringData = String.valueOf(response.body());
-                                            //base64를 바이트 데이터로 디코딩
-                                            byte[] decodedBytes = Base64.decode(base64StringData, Base64.DEFAULT);
-                                            //디코딩된 바이트 배열을 원래 문자열로 변환
-                                            String decodedString = new String(decodedBytes, StandardCharsets.UTF_8);
-                                            //이미지 뷰는 안보이게
-                                            convertImage.setVisibility(View.INVISIBLE);
-                                            convertData.setText(decodedString);
-
-                                        } else {
-                                            Log.d("convertFail1", String.valueOf(response.code()));
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<ResponseMultiData> call, Throwable t) {
-                                        Log.d("convertFail2", String.valueOf(t.getMessage()));
-                                    }
-                                });
-
-                                break;
-                        }
-                    }
-                });
+                int selectedId = radioGroup.getCheckedRadioButtonId();
+                switch (selectedId){
+                    case R.id.radioVoice:
+                        Log.d("radio", "voice");
+                        tts.speak(inputData, TextToSpeech.QUEUE_FLUSH, null);
+                        break;
+                    case R.id.radioImage:
+                        Log.d("radio", "Image");
+                        break;
+                    case R.id.radioText:
+                        Log.d("radio", "text");
+                        // 텍스트 선택됨(완료)
+                        convertData.setText(inputData);
+                        break;
+                }
             }
-
-
         });
         dialogBuilder.setNegativeButton("취소", null);
         AlertDialog dialog = dialogBuilder.create();
@@ -349,6 +252,8 @@ public class MultiDataFragment extends Fragment {
         return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
+
+    //아래는 멀티데이터에서 서버 미사용으로 사용안함
     //base64를 비트맵 이미지로 디코딩
     public Bitmap decodeBase64ToImage(String base64Image) {
         byte[] imageBytes = Base64.decode(base64Image, Base64.DEFAULT);
